@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dimmskuy Tools Menu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --panel-bg: rgba(30, 41, 59, 0.7);
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            min-height: 100vh;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .header-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+            background: linear-gradient(to right, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .header-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            font-size: 1rem;
+        }
+
+        /* Desain Kotak Menu (Grid) */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .tool-card {
+            background: var(--panel-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 25px;
+            text-decoration: none;
+            color: var(--text-main);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
+        }
+
+        .tool-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .tool-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .tool-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Kotak untuk tool yang belum ada / coming soon */
+        .tool-card.disabled {
+            opacity: 0.5;
+            pointer-events: none; /* Tidak bisa diklik */
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="header-title">Dimmskuy Tools Area</h1>
+        <p class="header-subtitle">Pilih menu alat pemrosesan yang ingin Anda gunakan</p>
+
+        <div class="tools-grid">
+            <!-- Menu 1: Pencocok UID -->
+            <a href="/api/PENCOCOKUID" class="tool-card">
+                <div class="tool-icon">🔍</div>
+                <div class="tool-title">Pencocok UID & Cookies</div>
+                <div class="tool-desc">Alat untuk mencocokkan daftar UID Facebook dengan raw cookies secara cepat dan aman di memori.</div>
+            </a>
+
+            <!-- Menu 2: Contoh Tool Lain (Bisa diklik nanti jika sudah dibuatkan filenya) -->
+            <a href="#" class="tool-card disabled">
+                <div class="tool-icon">⚙️</div>
+                <div class="tool-title">Tool Baru 1</div>
+                <div class="tool-desc">Segera hadir. Slot untuk tools baru Anda selanjutnya.</div>
+            </a>
+
+            <!-- Menu 3: Contoh Tool Lain -->
+            <a href="#" class="tool-card disabled">
+                <div class="tool-icon">🛠️</div>
+                <div class="tool-title">Tool Baru 2</div>
+                <div class="tool-desc">Segera hadir. Slot untuk tools baru Anda selanjutnya.</div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
