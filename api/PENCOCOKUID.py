@@ -10,73 +10,338 @@ def get_uid_from_cookie(cookie_str):
 
 class handler(BaseHTTPRequestHandler):
     
-    # Mengizinkan akses dari website manapun (CORS)
     def _send_cors_headers(self):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
 
-    # Menangani pre-flight request untuk CORS
     def do_OPTIONS(self):
         self.send_response(200)
         self._send_cors_headers()
         self.end_headers()
 
-    # Menangani tampilan GET (saat orang baru membuka URL web)
     def do_GET(self):
         self.send_response(200)
         self._send_cors_headers()
         self.send_header('Content-type', 'text/html; charset=utf-8')
         self.end_headers()
         
-        # Tampilan Form Sederhana HTML
+        # Tampilan HTML Modern, Dark Theme dengan Grid Layout
         html_content = """
         <!DOCTYPE html>
-        <html>
+        <html lang="id">
         <head>
-            <title>Tool Pencocok UID & Cookies Facebook</title>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Pencocok UID & Cookies Pro</title>
+            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
             <style>
-                body { font-family: sans-serif; padding: 20px; max-width: 800px; margin: 0 auto;}
-                textarea { width: 100%; height: 150px; margin-bottom: 10px; }
-                button { padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; }
-                button:hover { background: #0056b3; }
+                :root {
+                    --bg-dark: #0f172a;
+                    --panel-bg: rgba(30, 41, 59, 0.7);
+                    --accent: #3b82f6;
+                    --accent-hover: #2563eb;
+                    --text-main: #f8fafc;
+                    --text-muted: #94a3b8;
+                    --border: rgba(255, 255, 255, 0.1);
+                    --success: #10b981;
+                }
+                
+                body {
+                    font-family: 'Inter', sans-serif;
+                    background-color: var(--bg-dark);
+                    background-image: 
+                        radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+                    color: var(--text-main);
+                    margin: 0;
+                    padding: 40px 20px;
+                    min-height: 100vh;
+                    box-sizing: border-box;
+                }
+
+                .container {
+                    max-width: 1000px;
+                    margin: 0 auto;
+                }
+
+                .header-title {
+                    text-align: center;
+                    font-size: 2.5rem;
+                    font-weight: 800;
+                    margin-bottom: 10px;
+                    background: linear-gradient(to right, #60a5fa, #34d399);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                }
+                
+                .header-subtitle {
+                    text-align: center;
+                    color: var(--text-muted);
+                    margin-bottom: 40px;
+                }
+
+                .glass-panel {
+                    background: var(--panel-bg);
+                    backdrop-filter: blur(12px);
+                    -webkit-backdrop-filter: blur(12px);
+                    border: 1px solid var(--border);
+                    border-radius: 16px;
+                    padding: 24px;
+                    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+                    margin-bottom: 24px;
+                }
+
+                .grid-2col {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 20px;
+                    margin-bottom: 20px;
+                }
+
+                @media (max-width: 768px) {
+                    .grid-2col {
+                        grid-template-columns: 1fr; /* Responsif untuk HP */
+                    }
+                }
+
+                label {
+                    display: block;
+                    font-weight: 600;
+                    margin-bottom: 8px;
+                    font-size: 0.95rem;
+                }
+
+                textarea, input {
+                    width: 100%;
+                    background: rgba(15, 23, 42, 0.6);
+                    border: 1px solid var(--border);
+                    color: var(--text-main);
+                    border-radius: 8px;
+                    padding: 12px;
+                    font-family: monospace;
+                    font-size: 0.9rem;
+                    box-sizing: border-box;
+                    transition: border-color 0.3s ease;
+                }
+                
+                textarea::placeholder, input::placeholder {
+                    color: rgba(148, 163, 184, 0.5);
+                }
+
+                textarea:focus, input:focus {
+                    outline: none;
+                    border-color: var(--accent);
+                }
+
+                textarea {
+                    height: 250px;
+                    resize: vertical;
+                }
+
+                .action-btn {
+                    width: 100%;
+                    background: var(--accent);
+                    color: white;
+                    border: none;
+                    padding: 14px;
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+                }
+
+                .action-btn:hover {
+                    background: var(--accent-hover);
+                    transform: translateY(-2px);
+                }
+
+                .action-btn:disabled {
+                    background: var(--text-muted);
+                    cursor: not-allowed;
+                    transform: none;
+                    box-shadow: none;
+                }
+
+                #resultSection {
+                    display: none; /* Sembunyikan awal */
+                    margin-top: 30px;
+                }
+                
+                .result-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 12px;
+                }
+                
+                .status-badge {
+                    background: rgba(16, 185, 129, 0.2);
+                    color: var(--success);
+                    padding: 6px 12px;
+                    border-radius: 20px;
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    border: 1px solid rgba(16, 185, 129, 0.3);
+                }
+
+                .copy-btn {
+                    background: rgba(255,255,255,0.1);
+                    color: var(--text-main);
+                    border: 1px solid var(--border);
+                    padding: 8px 16px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-size: 0.9rem;
+                    font-weight: 600;
+                    transition: all 0.2s ease;
+                }
+
+                .copy-btn:hover {
+                    background: rgba(255,255,255,0.2);
+                }
+                
+                .copy-btn.copied {
+                    background: var(--success);
+                    border-color: var(--success);
+                }
+                
+                #resultText {
+                    height: 200px;
+                    background: rgba(0, 0, 0, 0.3);
+                    border-color: rgba(16, 185, 129, 0.3);
+                }
+
             </style>
         </head>
         <body>
-            <h2>Tool Pencocok UID & Cookies Facebook</h2>
-            <form method="POST" action="/api/PENCOCOKUID">
-                <label><b>Daftar UID (satu per baris, format: UID atau UID|PASS):</b></label><br>
-                <textarea name="uids" placeholder="Contoh:\n10008xxxx\n10009xxxx|password123"></textarea><br>
-                
-                <label><b>Daftar Cookies Mentahan (satu per baris):</b></label><br>
-                <textarea name="cookies" placeholder="Tempel semua raw cookies di sini..."></textarea><br>
-                
-                <label><b>Password Default (Opsional):</b></label><br>
-                <input type="text" name="global_password" placeholder="Masukkan password" style="width: 100%; padding: 8px; margin-bottom: 10px;"><br>
-                
-                <button type="submit">Cocokkan Sekarang</button>
-            </form>
+            <div class="container">
+                <h1 class="header-title">Pencocok UID & Cookies</h1>
+                <p class="header-subtitle">Alat pemrosesan cepat dan aman</p>
+
+                <div class="glass-panel">
+                    <form id="matchForm">
+                        <div class="grid-2col">
+                            <!-- Kolom Kiri: Cookies -->
+                            <div>
+                                <label>🍪 Daftar Cookies (Raw)</label>
+                                <textarea id="cookiesInput" placeholder="Tempel semua raw cookies di sini...&#10;Satu cookie per baris" required></textarea>
+                            </div>
+                            
+                            <!-- Kolom Kanan: UID -->
+                            <div>
+                                <label>👤 Daftar UID Target</label>
+                                <textarea id="uidsInput" placeholder="Contoh format:&#10;10008xxxx&#10;10009xxxx|password123&#10;&#10;Satu per baris" required></textarea>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 24px;">
+                            <label>🔑 Password Default (Opsional)</label>
+                            <input type="text" id="globalPassword" placeholder="Akan digunakan jika baris UID tidak memiliki password">
+                        </div>
+
+                        <button type="submit" id="submitBtn" class="action-btn">🚀 Cocokkan Sekarang</button>
+                    </form>
+                </div>
+
+                <!-- Bagian Hasil (Disembunyikan di awal) -->
+                <div id="resultSection" class="glass-panel">
+                    <div class="result-header">
+                        <div>
+                            <span style="font-size: 1.2rem; font-weight: 600; margin-right: 15px;">Hasil Pencocokan</span>
+                            <span id="matchCount" class="status-badge">0 Akun Cocok</span>
+                        </div>
+                        <button id="copyBtn" class="copy-btn">📋 Salin Hasil</button>
+                    </div>
+                    <textarea id="resultText" readonly placeholder="Hasil akan muncul di sini..."></textarea>
+                </div>
+            </div>
+
+            <script>
+                document.getElementById('matchForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const btn = document.getElementById('submitBtn');
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '⏳ Memproses...';
+                    btn.disabled = true;
+                    
+                    const payload = {
+                        uids: document.getElementById('uidsInput').value,
+                        cookies: document.getElementById('cookiesInput').value,
+                        global_password: document.getElementById('globalPassword').value
+                    };
+
+                    try {
+                        const response = await fetch('/api/PENCOCOKUID', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        
+                        const data = await response.json();
+                        
+                        document.getElementById('resultSection').style.display = 'block';
+                        document.getElementById('resultText').value = data.hasil;
+                        document.getElementById('matchCount').innerText = `${data.jumlah} Akun Cocok`;
+                        
+                        // Scroll pelan ke hasil
+                        document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+
+                    } catch (error) {
+                        alert('Terjadi kesalahan saat memproses data.');
+                        console.error(error);
+                    } finally {
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    }
+                });
+
+                // Fungsi Tombol Copy
+                document.getElementById('copyBtn').addEventListener('click', function() {
+                    const resultText = document.getElementById('resultText');
+                    if (!resultText.value) return;
+                    
+                    resultText.select();
+                    document.execCommand('copy');
+                    
+                    const btn = this;
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '✅ Berhasil Disalin!';
+                    btn.classList.add('copied');
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            </script>
         </body>
         </html>
         """
         self.wfile.write(html_content.encode('utf-8'))
 
-    # Menangani saat tombol "Cocokkan Sekarang" ditekan (POST)
     def do_POST(self):
-        # Ambil panjang data yang dikirim
+        # Ambil panjang data
         content_length = int(self.headers.get('Content-Length', 0))
         post_data = self.rfile.read(content_length).decode('utf-8')
         
-        # Parsing data yang dikirim dari form
-        parsed_data = parse_qs(post_data)
-        
-        raw_uids = parsed_data.get('uids', [''])[0]
-        raw_cookies = parsed_data.get('cookies', [''])[0]
-        global_password = parsed_data.get('global_password', [''])[0].strip()
+        # Karena kita sekarang kirim data pakai JSON dari frontend
+        try:
+            parsed_data = json.loads(post_data)
+        except json.JSONDecodeError:
+            self.send_response(400)
+            self.end_headers()
+            return
+            
+        raw_uids = parsed_data.get('uids', '')
+        raw_cookies = parsed_data.get('cookies', '')
+        global_password = parsed_data.get('global_password', '').strip()
 
         # --- LOGIKA PENCOCOKAN ---
         cookie_dict = {}
-        # Proses setiap baris cookie
         for c_str in raw_cookies.splitlines():
             c_str = c_str.strip()
             if c_str:
@@ -87,7 +352,6 @@ class handler(BaseHTTPRequestHandler):
         hasil_match = []
         matched_count = 0
         
-        # Proses setiap baris UID
         for line in raw_uids.splitlines():
             line_clean = line.strip()
             if not line_clean:
@@ -107,31 +371,15 @@ class handler(BaseHTTPRequestHandler):
                 hasil_match.append(hasil_line)
                 matched_count += 1
         
-        # --- TAMPILKAN HASILNYA KE LAYAR ---
+        # --- KIRIM BALASAN FORMAT JSON KE FRONTEND ---
         self.send_response(200)
         self._send_cors_headers()
-        self.send_header('Content-type', 'text/html; charset=utf-8')
+        self.send_header('Content-type', 'application/json')
         self.end_headers()
         
-        hasil_text = "\n".join(hasil_match)
-        
-        html_result = f"""
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Hasil Pencocokan</title>
-            <style>
-                body {{ font-family: sans-serif; padding: 20px; max-width: 800px; margin: 0 auto;}}
-                textarea {{ width: 100%; height: 300px; }}
-                a {{ display: inline-block; margin-top: 10px; padding: 10px 20px; background: #28a745; color: white; text-decoration: none; border-radius: 5px; }}
-            </style>
-        </head>
-        <body>
-            <h2>Proses Selesai!</h2>
-            <p>Berhasil mencocokkan: <b>{matched_count} Akun</b></p>
-            <textarea readonly>{hasil_text}</textarea><br>
-            <a href="/api/PENCOCOKUID">Kembali ke Awal</a>
-        </body>
-        </html>
-        """
-        self.wfile.write(html_result.encode('utf-8'))
+        response_data = {
+            "status": "success",
+            "jumlah": matched_count,
+            "hasil": "\n".join(hasil_match)
+        }
+        self.wfile.write(json.dumps(response_data).encode('utf-8'))
