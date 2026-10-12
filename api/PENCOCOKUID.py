@@ -25,6 +25,7 @@ class handler(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/html; charset=utf-8')
         self.end_headers()
         
+        # UI TEMA FUTURISTIK / CYBERPUNK
         html_content = """
         <!DOCTYPE html>
         <html lang="id">
@@ -32,70 +33,121 @@ class handler(BaseHTTPRequestHandler):
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>PENCOCOK UID & COOKIES</title>
-            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+            <!-- Menggunakan font bergaya teknologi -->
+            <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
             <style>
                 :root {
-                    --bg-dark: #0f172a;
-                    --panel-bg: rgba(30, 41, 59, 0.7);
-                    --accent: #3b82f6;
-                    --accent-hover: #2563eb;
-                    --text-main: #f8fafc;
-                    --text-muted: #94a3b8;
-                    --border: rgba(255, 255, 255, 0.1);
+                    --bg-dark: #030712;
+                    --panel-bg: rgba(17, 24, 39, 0.85);
+                    --accent: #0ea5e9;
+                    --accent-hover: #38bdf8;
+                    --neon-glow: 0 0 10px rgba(14, 165, 233, 0.5), 0 0 20px rgba(14, 165, 233, 0.3);
+                    --text-main: #e2e8f0;
+                    --text-muted: #64748b;
+                    --border: rgba(14, 165, 233, 0.3);
                     --success: #10b981;
+                    --success-glow: 0 0 10px rgba(16, 185, 129, 0.5);
                 }
                 
                 body {
-                    font-family: 'Inter', sans-serif;
+                    font-family: 'Rajdhani', sans-serif;
                     background-color: var(--bg-dark);
+                    /* Background Grid Pattern */
                     background-image: 
-                        radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
-                        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+                        linear-gradient(rgba(14, 165, 233, 0.05) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(14, 165, 233, 0.05) 1px, transparent 1px);
+                    background-size: 40px 40px;
                     color: var(--text-main);
                     margin: 0;
                     padding: 30px 15px;
                     min-height: 100vh;
                     box-sizing: border-box;
+                    overflow-x: hidden;
                 }
 
-                /* Mengubah max-width agar lebih kecil / compact */
+                /* Animasi Load Masuk */
+                @keyframes fadeInUp {
+                    from { opacity: 0; transform: translateY(30px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+
+                /* Animasi Memproses Data */
+                @keyframes pulseBorder {
+                    0% { border-color: rgba(14, 165, 233, 0.3); }
+                    50% { border-color: rgba(14, 165, 233, 0.8); box-shadow: var(--neon-glow); }
+                    100% { border-color: rgba(14, 165, 233, 0.3); }
+                }
+
                 .container {
                     max-width: 850px; 
                     margin: 0 auto;
+                    animation: fadeInUp 0.8s ease-out forwards;
                 }
 
                 .header-title {
                     text-align: center;
-                    font-size: 2rem; /* Ukuran font diperkecil sedikit */
-                    font-weight: 800;
+                    font-size: 2.8rem;
+                    font-weight: 700;
                     margin-bottom: 5px;
-                    background: linear-gradient(to right, #60a5fa, #34d399);
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
+                    color: #fff;
+                    text-shadow: var(--neon-glow);
+                    letter-spacing: 2px;
                 }
                 
                 .header-subtitle {
                     text-align: center;
-                    color: var(--text-muted);
+                    color: var(--accent);
                     margin-bottom: 30px;
-                    font-size: 0.9rem;
+                    font-size: 1rem;
+                    letter-spacing: 2px;
+                    text-transform: uppercase;
                 }
 
                 .glass-panel {
                     background: var(--panel-bg);
-                    backdrop-filter: blur(12px);
-                    -webkit-backdrop-filter: blur(12px);
+                    backdrop-filter: blur(10px);
+                    -webkit-backdrop-filter: blur(10px);
                     border: 1px solid var(--border);
                     border-radius: 12px;
                     padding: 20px;
-                    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
                     margin-bottom: 20px;
+                    position: relative;
+                    overflow: hidden;
+                    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+                    transition: all 0.3s ease;
+                }
+                
+                .glass-panel:hover {
+                    border-color: var(--accent);
+                    box-shadow: var(--neon-glow);
+                }
+
+                /* Animasi Scanline (Garis Pemindai) di dalam kotak */
+                .glass-panel::before {
+                    content: "";
+                    position: absolute;
+                    top: -100%;
+                    left: 0;
+                    width: 100%;
+                    height: 3px;
+                    background: var(--accent);
+                    box-shadow: 0 0 15px var(--accent);
+                    opacity: 0.5;
+                    animation: scan 4s linear infinite;
+                    pointer-events: none;
+                }
+
+                @keyframes scan {
+                    0% { top: -10px; opacity: 0; }
+                    10% { opacity: 0.5; }
+                    90% { opacity: 0.5; }
+                    100% { top: 100%; opacity: 0; }
                 }
 
                 .grid-2col {
                     display: grid;
                     grid-template-columns: 1fr 1fr;
-                    gap: 15px; /* Jarak antar kolom diperkecil */
+                    gap: 15px;
                     margin-bottom: 15px;
                 }
 
@@ -107,64 +159,88 @@ class handler(BaseHTTPRequestHandler):
 
                 label {
                     display: block;
-                    font-weight: 600;
+                    font-weight: 700;
                     margin-bottom: 6px;
-                    font-size: 0.9rem;
+                    font-size: 1.1rem;
+                    color: var(--accent);
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
                 }
 
                 textarea, input {
                     width: 100%;
-                    background: rgba(15, 23, 42, 0.6);
+                    background: rgba(3, 7, 18, 0.8);
                     border: 1px solid var(--border);
-                    color: var(--text-main);
+                    color: var(--accent-hover);
                     border-radius: 6px;
                     padding: 10px;
-                    font-family: monospace;
-                    font-size: 0.85rem;
+                    font-family: 'Share Tech Mono', monospace;
+                    font-size: 0.95rem;
                     box-sizing: border-box;
-                    transition: border-color 0.3s ease;
-                    /* KUNCI UKURAN TEXTAREA */
+                    transition: all 0.3s ease;
                     resize: none; 
                 }
                 
                 textarea::placeholder, input::placeholder {
-                    color: rgba(148, 163, 184, 0.5);
+                    color: rgba(100, 116, 139, 0.5);
                 }
 
                 textarea:focus, input:focus {
                     outline: none;
                     border-color: var(--accent);
+                    box-shadow: inset 0 0 10px rgba(14, 165, 233, 0.2), var(--neon-glow);
                 }
 
-                /* Tinggi textarea diperkecil sedikit */
                 textarea {
                     height: 180px;
                 }
 
+                /* Tombol Animasi Futuristik */
                 .action-btn {
                     width: 100%;
-                    background: var(--accent);
-                    color: white;
-                    border: none;
-                    padding: 12px;
-                    font-size: 1rem;
-                    font-weight: 600;
+                    background: transparent;
+                    color: var(--accent);
+                    border: 2px solid var(--accent);
+                    padding: 14px;
+                    font-size: 1.3rem;
+                    font-weight: 700;
                     border-radius: 6px;
                     cursor: pointer;
                     transition: all 0.3s ease;
-                    box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+                    text-transform: uppercase;
+                    letter-spacing: 2px;
+                    font-family: 'Rajdhani', sans-serif;
+                    position: relative;
+                    overflow: hidden;
+                }
+
+                .action-btn::before {
+                    content: '';
+                    position: absolute;
+                    top: 0; left: -100%;
+                    width: 100%; height: 100%;
+                    background: linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.4), transparent);
+                    transition: all 0.4s ease;
+                }
+
+                .action-btn:hover::before {
+                    left: 100%;
                 }
 
                 .action-btn:hover {
-                    background: var(--accent-hover);
-                    transform: translateY(-2px);
+                    background: var(--accent);
+                    color: #fff;
+                    box-shadow: var(--neon-glow);
                 }
 
                 .action-btn:disabled {
-                    background: var(--text-muted);
+                    border-color: var(--text-muted);
+                    color: var(--text-muted);
                     cursor: not-allowed;
-                    transform: none;
                     box-shadow: none;
+                }
+                .action-btn:disabled:hover {
+                    background: transparent;
                 }
                 
                 .result-header {
@@ -175,41 +251,54 @@ class handler(BaseHTTPRequestHandler):
                 }
                 
                 .status-badge {
-                    background: rgba(16, 185, 129, 0.2);
+                    background: rgba(16, 185, 129, 0.1);
                     color: var(--success);
-                    padding: 4px 10px;
-                    border-radius: 12px;
-                    font-size: 0.8rem;
-                    font-weight: 600;
-                    border: 1px solid rgba(16, 185, 129, 0.3);
+                    padding: 4px 12px;
+                    border-radius: 4px;
+                    font-size: 1rem;
+                    font-weight: 700;
+                    border: 1px solid var(--success);
+                    box-shadow: var(--success-glow);
+                    font-family: 'Share Tech Mono', monospace;
                 }
 
                 .copy-btn {
-                    background: rgba(255,255,255,0.1);
-                    color: var(--text-main);
-                    border: 1px solid var(--border);
-                    padding: 6px 12px;
+                    background: transparent;
+                    color: var(--accent);
+                    border: 1px solid var(--accent);
+                    padding: 6px 15px;
                     border-radius: 4px;
                     cursor: pointer;
-                    font-size: 0.85rem;
-                    font-weight: 600;
+                    font-size: 1rem;
+                    font-weight: 700;
                     transition: all 0.2s ease;
+                    text-transform: uppercase;
+                    font-family: 'Rajdhani', sans-serif;
                 }
 
                 .copy-btn:hover {
-                    background: rgba(255,255,255,0.2);
+                    background: var(--accent);
+                    color: #fff;
+                    box-shadow: var(--neon-glow);
                 }
                 
                 .copy-btn.copied {
                     background: var(--success);
                     border-color: var(--success);
+                    color: #fff;
+                    box-shadow: var(--success-glow);
                 }
                 
-                /* Textarea hasil dibuat lebih pendek */
                 #resultText {
                     height: 150px;
-                    background: rgba(0, 0, 0, 0.3);
-                    border-color: rgba(16, 185, 129, 0.3);
+                    background: rgba(3, 7, 18, 0.9);
+                    border-color: rgba(16, 185, 129, 0.5);
+                    color: var(--success);
+                }
+                
+                /* Efek kedip saat hasil memproses */
+                .typing-active {
+                    animation: pulseBorder 1s infinite;
                 }
 
             </style>
@@ -217,43 +306,43 @@ class handler(BaseHTTPRequestHandler):
         <body>
             <div class="container">
                 <h1 class="header-title">PENCOCOK UID & COOKIES</h1>
-                <p class="header-subtitle">Alat pemrosesan cepat dan aman</p>
+                <p class="header-subtitle">/// TERMINAL PROTOCOL INITIATED ///</p>
 
                 <div class="glass-panel">
                     <form id="matchForm">
                         <div class="grid-2col">
-                            <!-- Kolom Kiri: Cookies (Sesuai Permintaan) -->
-                            <div>
-                                <label>🍪 Cookies</label>
-                                <textarea id="cookiesInput" placeholder="Tempel raw cookies di sini...&#10;Satu cookie per baris" required></textarea>
-                            </div>
-                            
-                            <!-- Kolom Kanan: UID (Sesuai Permintaan) -->
+                            <!-- Kolom Kiri: UID (SESUAI PERMINTAAN) -->
                             <div>
                                 <label>👤 UID</label>
-                                <textarea id="uidsInput" placeholder="Contoh:&#10;10008xxxx&#10;10009xxxx|password123&#10;&#10;Satu per baris" required></textarea>
+                                <textarea id="uidsInput" placeholder="> Input UID array...&#10;> 10008xxxx&#10;> 10009xxxx|password123&#10;&#10;> 1 data per baris" required></textarea>
+                            </div>
+                            
+                            <!-- Kolom Kanan: Cookies (SESUAI PERMINTAAN) -->
+                            <div>
+                                <label>🍪 Cookies</label>
+                                <textarea id="cookiesInput" placeholder="> Input RAW cookies...&#10;> c_user=...&#10;&#10;> 1 data per baris" required></textarea>
                             </div>
                         </div>
 
                         <div style="margin-bottom: 15px;">
                             <label>🔑 Password (Opsional)</label>
-                            <input type="text" id="globalPassword" placeholder="Akan digunakan jika UID tidak memiliki password">
+                            <input type="text" id="globalPassword" placeholder="> Set default password override...">
                         </div>
 
-                        <button type="submit" id="submitBtn" class="action-btn">🚀 Cocokkan Sekarang</button>
+                        <button type="submit" id="submitBtn" class="action-btn">EXECUTE_MATCH()</button>
                     </form>
                 </div>
 
-                <!-- Bagian Hasil (Selalu Ditampilkan dari awal) -->
+                <!-- Bagian Hasil -->
                 <div id="resultSection" class="glass-panel">
                     <div class="result-header">
                         <div>
-                            <span style="font-size: 1.1rem; font-weight: 600; margin-right: 10px;">Hasil Pencocokan</span>
-                            <span id="matchCount" class="status-badge">0 Akun</span>
+                            <span style="font-size: 1.2rem; font-weight: 700; margin-right: 10px; color: var(--accent); text-transform: uppercase;">[OUTPUT_LOG]</span>
+                            <span id="matchCount" class="status-badge">0 MATCH</span>
                         </div>
-                        <button id="copyBtn" class="copy-btn">📋 Salin Hasil</button>
+                        <button id="copyBtn" class="copy-btn">COPY_DATA</button>
                     </div>
-                    <textarea id="resultText" readonly placeholder="Menunggu proses pencocokan..."></textarea>
+                    <textarea id="resultText" readonly placeholder="> Standby for execution..."></textarea>
                 </div>
             </div>
 
@@ -263,8 +352,13 @@ class handler(BaseHTTPRequestHandler):
                     
                     const btn = document.getElementById('submitBtn');
                     const originalText = btn.innerHTML;
-                    btn.innerHTML = '⏳ Memproses...';
+                    btn.innerHTML = 'PROCESSING...';
                     btn.disabled = true;
+                    
+                    // Efek proses di kolom result
+                    const resultTextarea = document.getElementById('resultText');
+                    resultTextarea.classList.add('typing-active');
+                    resultTextarea.value = '> Executing matching algorithm...\n> Extracting UID from Cookies...\n> Please wait...';
                     
                     const payload = {
                         uids: document.getElementById('uidsInput').value,
@@ -281,32 +375,37 @@ class handler(BaseHTTPRequestHandler):
                         
                         const data = await response.json();
                         
-                        document.getElementById('resultText').value = data.hasil;
-                        document.getElementById('matchCount').innerText = `${data.jumlah} Akun`;
-                        
-                        // Scroll pelan ke hasil
-                        document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+                        // Sedikit delay agar efek animasi processing terlihat
+                        setTimeout(() => {
+                            resultTextarea.classList.remove('typing-active');
+                            resultTextarea.value = data.hasil || '> No matches found in database.';
+                            document.getElementById('matchCount').innerText = `${data.jumlah} MATCH`;
+                        }, 800); 
 
                     } catch (error) {
-                        alert('Terjadi kesalahan saat memproses data.');
+                        alert('SYSTEM ERROR: Execution failed.');
                         console.error(error);
+                        resultTextarea.classList.remove('typing-active');
+                        resultTextarea.value = '> ERROR OCCURRED.';
                     } finally {
-                        btn.innerHTML = originalText;
-                        btn.disabled = false;
+                        setTimeout(() => {
+                            btn.innerHTML = originalText;
+                            btn.disabled = false;
+                        }, 800);
                     }
                 });
 
                 // Fungsi Tombol Copy
                 document.getElementById('copyBtn').addEventListener('click', function() {
                     const resultText = document.getElementById('resultText');
-                    if (!resultText.value) return;
+                    if (!resultText.value || resultText.value.startsWith('>')) return;
                     
                     resultText.select();
                     document.execCommand('copy');
                     
                     const btn = this;
                     const originalText = btn.innerHTML;
-                    btn.innerHTML = '✅ Disalin!';
+                    btn.innerHTML = 'COPIED!';
                     btn.classList.add('copied');
                     
                     setTimeout(() => {
