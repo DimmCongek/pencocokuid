@@ -1,7 +1,6 @@
 from http.server import BaseHTTPRequestHandler
 import json
 import re
-from urllib.parse import parse_qs
 
 def get_uid_from_cookie(cookie_str):
     """Mengekstrak UID (c_user) dari string cookie."""
@@ -26,14 +25,13 @@ class handler(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/html; charset=utf-8')
         self.end_headers()
         
-        # Tampilan HTML Modern, Dark Theme dengan Grid Layout
         html_content = """
         <!DOCTYPE html>
         <html lang="id">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Pencocok UID & Cookies Pro</title>
+            <title>PENCOCOK UID & COOKIES</title>
             <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
             <style>
                 :root {
@@ -55,21 +53,22 @@ class handler(BaseHTTPRequestHandler):
                         radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
                     color: var(--text-main);
                     margin: 0;
-                    padding: 40px 20px;
+                    padding: 30px 15px;
                     min-height: 100vh;
                     box-sizing: border-box;
                 }
 
+                /* Mengubah max-width agar lebih kecil / compact */
                 .container {
-                    max-width: 1000px;
+                    max-width: 850px; 
                     margin: 0 auto;
                 }
 
                 .header-title {
                     text-align: center;
-                    font-size: 2.5rem;
+                    font-size: 2rem; /* Ukuran font diperkecil sedikit */
                     font-weight: 800;
-                    margin-bottom: 10px;
+                    margin-bottom: 5px;
                     background: linear-gradient(to right, #60a5fa, #34d399);
                     -webkit-background-clip: text;
                     -webkit-text-fill-color: transparent;
@@ -78,7 +77,8 @@ class handler(BaseHTTPRequestHandler):
                 .header-subtitle {
                     text-align: center;
                     color: var(--text-muted);
-                    margin-bottom: 40px;
+                    margin-bottom: 30px;
+                    font-size: 0.9rem;
                 }
 
                 .glass-panel {
@@ -86,30 +86,30 @@ class handler(BaseHTTPRequestHandler):
                     backdrop-filter: blur(12px);
                     -webkit-backdrop-filter: blur(12px);
                     border: 1px solid var(--border);
-                    border-radius: 16px;
-                    padding: 24px;
+                    border-radius: 12px;
+                    padding: 20px;
                     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-                    margin-bottom: 24px;
+                    margin-bottom: 20px;
                 }
 
                 .grid-2col {
                     display: grid;
                     grid-template-columns: 1fr 1fr;
-                    gap: 20px;
-                    margin-bottom: 20px;
+                    gap: 15px; /* Jarak antar kolom diperkecil */
+                    margin-bottom: 15px;
                 }
 
                 @media (max-width: 768px) {
                     .grid-2col {
-                        grid-template-columns: 1fr; /* Responsif untuk HP */
+                        grid-template-columns: 1fr;
                     }
                 }
 
                 label {
                     display: block;
                     font-weight: 600;
-                    margin-bottom: 8px;
-                    font-size: 0.95rem;
+                    margin-bottom: 6px;
+                    font-size: 0.9rem;
                 }
 
                 textarea, input {
@@ -117,12 +117,14 @@ class handler(BaseHTTPRequestHandler):
                     background: rgba(15, 23, 42, 0.6);
                     border: 1px solid var(--border);
                     color: var(--text-main);
-                    border-radius: 8px;
-                    padding: 12px;
+                    border-radius: 6px;
+                    padding: 10px;
                     font-family: monospace;
-                    font-size: 0.9rem;
+                    font-size: 0.85rem;
                     box-sizing: border-box;
                     transition: border-color 0.3s ease;
+                    /* KUNCI UKURAN TEXTAREA */
+                    resize: none; 
                 }
                 
                 textarea::placeholder, input::placeholder {
@@ -134,9 +136,9 @@ class handler(BaseHTTPRequestHandler):
                     border-color: var(--accent);
                 }
 
+                /* Tinggi textarea diperkecil sedikit */
                 textarea {
-                    height: 250px;
-                    resize: vertical;
+                    height: 180px;
                 }
 
                 .action-btn {
@@ -144,10 +146,10 @@ class handler(BaseHTTPRequestHandler):
                     background: var(--accent);
                     color: white;
                     border: none;
-                    padding: 14px;
-                    font-size: 1.1rem;
+                    padding: 12px;
+                    font-size: 1rem;
                     font-weight: 600;
-                    border-radius: 8px;
+                    border-radius: 6px;
                     cursor: pointer;
                     transition: all 0.3s ease;
                     box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
@@ -164,25 +166,20 @@ class handler(BaseHTTPRequestHandler):
                     transform: none;
                     box-shadow: none;
                 }
-
-                #resultSection {
-                    display: none; /* Sembunyikan awal */
-                    margin-top: 30px;
-                }
                 
                 .result-header {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    margin-bottom: 12px;
+                    margin-bottom: 10px;
                 }
                 
                 .status-badge {
                     background: rgba(16, 185, 129, 0.2);
                     color: var(--success);
-                    padding: 6px 12px;
-                    border-radius: 20px;
-                    font-size: 0.85rem;
+                    padding: 4px 10px;
+                    border-radius: 12px;
+                    font-size: 0.8rem;
                     font-weight: 600;
                     border: 1px solid rgba(16, 185, 129, 0.3);
                 }
@@ -191,10 +188,10 @@ class handler(BaseHTTPRequestHandler):
                     background: rgba(255,255,255,0.1);
                     color: var(--text-main);
                     border: 1px solid var(--border);
-                    padding: 8px 16px;
-                    border-radius: 6px;
+                    padding: 6px 12px;
+                    border-radius: 4px;
                     cursor: pointer;
-                    font-size: 0.9rem;
+                    font-size: 0.85rem;
                     font-weight: 600;
                     transition: all 0.2s ease;
                 }
@@ -208,8 +205,9 @@ class handler(BaseHTTPRequestHandler):
                     border-color: var(--success);
                 }
                 
+                /* Textarea hasil dibuat lebih pendek */
                 #resultText {
-                    height: 200px;
+                    height: 150px;
                     background: rgba(0, 0, 0, 0.3);
                     border-color: rgba(16, 185, 129, 0.3);
                 }
@@ -218,44 +216,44 @@ class handler(BaseHTTPRequestHandler):
         </head>
         <body>
             <div class="container">
-                <h1 class="header-title">Pencocok UID & Cookies</h1>
+                <h1 class="header-title">PENCOCOK UID & COOKIES</h1>
                 <p class="header-subtitle">Alat pemrosesan cepat dan aman</p>
 
                 <div class="glass-panel">
                     <form id="matchForm">
                         <div class="grid-2col">
-                            <!-- Kolom Kiri: Cookies -->
+                            <!-- Kolom Kiri: Cookies (Sesuai Permintaan) -->
                             <div>
-                                <label>🍪 Daftar Cookies (Raw)</label>
-                                <textarea id="cookiesInput" placeholder="Tempel semua raw cookies di sini...&#10;Satu cookie per baris" required></textarea>
+                                <label>🍪 Cookies</label>
+                                <textarea id="cookiesInput" placeholder="Tempel raw cookies di sini...&#10;Satu cookie per baris" required></textarea>
                             </div>
                             
-                            <!-- Kolom Kanan: UID -->
+                            <!-- Kolom Kanan: UID (Sesuai Permintaan) -->
                             <div>
-                                <label>👤 Daftar UID Target</label>
-                                <textarea id="uidsInput" placeholder="Contoh format:&#10;10008xxxx&#10;10009xxxx|password123&#10;&#10;Satu per baris" required></textarea>
+                                <label>👤 UID</label>
+                                <textarea id="uidsInput" placeholder="Contoh:&#10;10008xxxx&#10;10009xxxx|password123&#10;&#10;Satu per baris" required></textarea>
                             </div>
                         </div>
 
-                        <div style="margin-bottom: 24px;">
-                            <label>🔑 Password Default (Opsional)</label>
-                            <input type="text" id="globalPassword" placeholder="Akan digunakan jika baris UID tidak memiliki password">
+                        <div style="margin-bottom: 15px;">
+                            <label>🔑 Password (Opsional)</label>
+                            <input type="text" id="globalPassword" placeholder="Akan digunakan jika UID tidak memiliki password">
                         </div>
 
                         <button type="submit" id="submitBtn" class="action-btn">🚀 Cocokkan Sekarang</button>
                     </form>
                 </div>
 
-                <!-- Bagian Hasil (Disembunyikan di awal) -->
+                <!-- Bagian Hasil (Selalu Ditampilkan dari awal) -->
                 <div id="resultSection" class="glass-panel">
                     <div class="result-header">
                         <div>
-                            <span style="font-size: 1.2rem; font-weight: 600; margin-right: 15px;">Hasil Pencocokan</span>
-                            <span id="matchCount" class="status-badge">0 Akun Cocok</span>
+                            <span style="font-size: 1.1rem; font-weight: 600; margin-right: 10px;">Hasil Pencocokan</span>
+                            <span id="matchCount" class="status-badge">0 Akun</span>
                         </div>
                         <button id="copyBtn" class="copy-btn">📋 Salin Hasil</button>
                     </div>
-                    <textarea id="resultText" readonly placeholder="Hasil akan muncul di sini..."></textarea>
+                    <textarea id="resultText" readonly placeholder="Menunggu proses pencocokan..."></textarea>
                 </div>
             </div>
 
@@ -283,9 +281,8 @@ class handler(BaseHTTPRequestHandler):
                         
                         const data = await response.json();
                         
-                        document.getElementById('resultSection').style.display = 'block';
                         document.getElementById('resultText').value = data.hasil;
-                        document.getElementById('matchCount').innerText = `${data.jumlah} Akun Cocok`;
+                        document.getElementById('matchCount').innerText = `${data.jumlah} Akun`;
                         
                         // Scroll pelan ke hasil
                         document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
@@ -309,7 +306,7 @@ class handler(BaseHTTPRequestHandler):
                     
                     const btn = this;
                     const originalText = btn.innerHTML;
-                    btn.innerHTML = '✅ Berhasil Disalin!';
+                    btn.innerHTML = '✅ Disalin!';
                     btn.classList.add('copied');
                     
                     setTimeout(() => {
@@ -324,11 +321,9 @@ class handler(BaseHTTPRequestHandler):
         self.wfile.write(html_content.encode('utf-8'))
 
     def do_POST(self):
-        # Ambil panjang data
         content_length = int(self.headers.get('Content-Length', 0))
         post_data = self.rfile.read(content_length).decode('utf-8')
         
-        # Karena kita sekarang kirim data pakai JSON dari frontend
         try:
             parsed_data = json.loads(post_data)
         except json.JSONDecodeError:
@@ -340,7 +335,6 @@ class handler(BaseHTTPRequestHandler):
         raw_cookies = parsed_data.get('cookies', '')
         global_password = parsed_data.get('global_password', '').strip()
 
-        # --- LOGIKA PENCOCOKAN ---
         cookie_dict = {}
         for c_str in raw_cookies.splitlines():
             c_str = c_str.strip()
@@ -371,7 +365,6 @@ class handler(BaseHTTPRequestHandler):
                 hasil_match.append(hasil_line)
                 matched_count += 1
         
-        # --- KIRIM BALASAN FORMAT JSON KE FRONTEND ---
         self.send_response(200)
         self._send_cors_headers()
         self.send_header('Content-type', 'application/json')
