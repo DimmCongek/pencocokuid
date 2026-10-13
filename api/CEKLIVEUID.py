@@ -1,6 +1,5 @@
 from http.server import BaseHTTPRequestHandler
 
-# Simpan seluruh kode HTML, CSS, dan JS ke dalam variabel string Python
 HTML_PAGE = """
 <!DOCTYPE html>
 <html lang="id">
@@ -11,46 +10,34 @@ HTML_PAGE = """
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #090d16;
-            --sidebar-bg: #0f172a;
-            --panel-bg: rgba(30, 41, 59, 0.6);
-            --accent: #3b82f6;
-            --accent-hover: #2563eb;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: rgba(255, 255, 255, 0.08);
-            --badge-bg: rgba(59, 130, 246, 0.15);
-            --badge-color: #60a5fa;
-            --green-live: #10b981;
-            --red-dead: #ef4444;
+            --bg-dark: #090d16; --sidebar-bg: #0f172a; --panel-bg: rgba(30, 41, 59, 0.6);
+            --accent: #3b82f6; --text-main: #f8fafc; --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08); --badge-bg: rgba(59, 130, 246, 0.15); --badge-color: #60a5fa;
+            --green-live: #10b981; --red-dead: #ef4444;
         }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 0; padding-top: 60px; min-height: 100vh; display: flex; overflow-x: hidden; }
-        .topbar { position: fixed; top: 0; left: 0; width: 100%; height: 60px; background: var(--sidebar-bg); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; box-sizing: border-box; z-index: 1000; justify-content: flex-start; gap: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .topbar { position: fixed; top: 0; left: 0; width: 100%; height: 60px; background: var(--sidebar-bg); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; box-sizing: border-box; z-index: 1000; gap: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
         .menu-toggle { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; justify-content: space-around; width: 26px; height: 22px; padding: 0; z-index: 1001; order: 1; }
-        .menu-toggle span { display: block; width: 100%; height: 3px; background-color: var(--text-main); border-radius: 3px; transition: all 0.3s ease; }
-        .menu-toggle:hover span { background-color: var(--accent); }
-        .topbar-brand { order: 2; font-size: 1.25rem; font-weight: 700; background: linear-gradient(to right, #60a5fa, #34d399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; }
-        @media (max-width: 768px) { .topbar { justify-content: space-between; } .menu-toggle { order: 2; } .topbar-brand { order: 1; } }
+        .menu-toggle span { display: block; width: 100%; height: 3px; background-color: var(--text-main); border-radius: 3px; }
+        .topbar-brand { order: 2; font-size: 1.25rem; font-weight: 700; background: linear-gradient(to right, #60a5fa, #34d399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-decoration: none;}
         .sidebar { width: 280px; background-color: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 24px 16px; box-sizing: border-box; height: calc(100vh - 60px); position: fixed; top: 60px; left: -320px; transition: left 0.3s ease; overflow-y: auto; z-index: 999; box-shadow: 4px 0 20px rgba(0,0,0,0.4); }
         .sidebar.active { left: 0; }
-        .overlay { position: fixed; top: 60px; left: 0; width: 100%; height: calc(100vh - 60px); background: rgba(0,0,0,0.5); backdrop-filter: blur(2px); z-index: 998; visibility: hidden; opacity: 0; transition: opacity 0.3s ease, visibility 0.3s ease; }
+        .overlay { position: fixed; top: 60px; left: 0; width: 100%; height: calc(100vh - 60px); background: rgba(0,0,0,0.5); backdrop-filter: blur(2px); z-index: 998; visibility: hidden; opacity: 0; }
         .overlay.active { visibility: visible; opacity: 1; }
         .category-group { margin-bottom: 16px; background: rgba(15, 23, 42, 0.4); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-        .category-title { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; font-weight: 600; font-size: 0.95rem; color: var(--text-main); background: rgba(30, 41, 59, 0.6); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .category-title { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; font-weight: 600; font-size: 0.95rem; background: rgba(30, 41, 59, 0.6); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .category-title-left { display: flex; align-items: center; gap: 10px; }
         .badge { background: var(--badge-bg); color: var(--badge-color); padding: 2px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
         .submenu { padding: 8px 14px; display: flex; flex-direction: column; gap: 6px; }
-        .submenu-item { display: flex; align-items: center; justify-content: flex-start; padding: 8px; color: var(--text-muted); text-decoration: none; border-radius: 6px; font-size: 0.9rem; transition: all 0.2s ease; gap: 10px; }
+        .submenu-item { display: flex; align-items: center; padding: 8px; color: var(--text-muted); text-decoration: none; border-radius: 6px; font-size: 0.9rem; gap: 10px; }
         .submenu-item:hover, .submenu-item.active { background: rgba(59, 130, 246, 0.1); color: var(--text-main); }
-        .main-content { padding: 40px; width: 100%; box-sizing: border-box; transition: padding-left 0.3s ease; display: flex; flex-direction: column; gap: 20px; }
+        .main-content { padding: 40px; width: 100%; box-sizing: border-box; transition: padding-left 0.3s ease; }
         @media (min-width: 769px) { .sidebar.active ~ .main-content { padding-left: 320px; } }
-        @media (max-width: 768px) { .main-content { padding: 20px; } }
         
-        /* Tool Khusus */
-        .tool-header { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+        .tool-header { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px;}
         .tool-header h2 { margin: 0 0 10px 0; color: #fff; display: flex; align-items: center; gap: 10px; }
         .tool-header p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
-        .tool-card { background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .tool-card { background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         label { display: block; font-weight: 600; margin-bottom: 10px; font-size: 15px; color: var(--text-main);}
         textarea { width: 100%; background-color: var(--bg-dark); color: var(--text-main); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-family: monospace; font-size: 14px; resize: vertical; outline: none; box-sizing: border-box; }
         textarea:focus { border-color: var(--accent); }
@@ -78,7 +65,8 @@ HTML_PAGE = """
 <body>
     <header class="topbar">
         <button class="menu-toggle" id="menuToggle"><span></span><span></span><span></span></button>
-        <div class="topbar-brand">⚡ Dimmskuy Tools</div>
+        <!-- Tombol kembali ke home -->
+        <a href="/" class="topbar-brand">⚡ Dimmskuy Tools</a>
     </header>
 
     <div class="overlay" id="overlay"></div>
@@ -95,16 +83,8 @@ HTML_PAGE = """
             <div class="submenu">
                 <a href="/api/PENCOCOKUID" class="submenu-item"><span style="font-size: 14px; color: #3b82f6;">◆</span> Pencocok UID</a>
                 <a href="/api/EKSTRAKUID" class="submenu-item"><span style="font-size: 14px; color: #3b82f6;">◆</span> Ekstrak UID</a>
+                <!-- Menu aktif -->
                 <a href="/api/CEKLIVEUID" class="submenu-item active"><span style="font-size: 14px; color: #3b82f6;">◆</span> Cek Live UID</a>
-            </div>
-        </div>
-        <div class="category-group">
-            <div class="category-title">
-                <div class="category-title-left">
-                    <svg style="width:18px;height:18px" viewBox="0 0 448 512"><path fill="#ffffff" d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.17h0A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14Z"/></svg>
-                    TikTok Tools
-                </div>
-                <span class="badge">2</span>
             </div>
         </div>
     </nav>
@@ -115,7 +95,7 @@ HTML_PAGE = """
                 <svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                 Cek Live UID
             </h2>
-            <p>Alat pemeriksa status aktif atau mati dari daftar UID Facebook (Client-Side Rendering untuk Bypass Vercel Timeout).</p>
+            <p>Alat pemeriksa status aktif atau mati dari daftar UID Facebook menggunakan proses client-side yang sangat cepat.</p>
         </div>
 
         <div class="tool-card">
@@ -206,7 +186,6 @@ HTML_PAGE = """
                         deadCount++; countDeadEl.innerText = deadCount;
                     }
                 });
-
                 await Promise.all(batchPromises);
                 let processed = Math.min(i + batchSize, lines.length);
                 statusInfo.innerHTML = `⏳ Sedang memproses ${processed} dari ${lines.length} data...`;
@@ -230,7 +209,6 @@ HTML_PAGE = """
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
-        # Saat browser mengakses /api/CEKLIVEUID, Python akan memberikan halaman HTML ini
         self.send_response(200)
         self.send_header('Content-type', 'text/html; charset=utf-8')
         self.end_headers()
