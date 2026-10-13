@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dimmskuy Tools Dashboard</title>
+    <title>Cek Live UID - Dimmskuy Tools</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -17,6 +17,8 @@
             --border: rgba(255, 255, 255, 0.08);
             --badge-bg: rgba(59, 130, 246, 0.15);
             --badge-color: #60a5fa;
+            --green-live: #10b981;
+            --red-dead: #ef4444;
         }
         
         body {
@@ -31,6 +33,7 @@
             overflow-x: hidden;
         }
 
+        /* --- STYLING SIDEBAR & TOPBAR (ASLI DARI DIMMSKUY DASHBOARD) --- */
         .topbar {
             position: fixed;
             top: 0;
@@ -181,16 +184,19 @@
             gap: 10px;
         }
 
-        .submenu-item:hover {
+        .submenu-item:hover, .submenu-item.active {
             background: rgba(59, 130, 246, 0.1);
             color: var(--text-main);
         }
-
+        
         .main-content {
             padding: 40px;
             width: 100%;
             box-sizing: border-box;
             transition: padding-left 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
         @media (min-width: 769px) {
@@ -200,72 +206,96 @@
             .main-content { padding: 20px; }
         }
 
-        .welcome-card {
+        /* --- STYLING KHUSUS TOOLS CEK LIVE UID --- */
+        .tool-header {
             background: var(--panel-bg);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 20px;
         }
 
-        .welcome-card h1 {
-            font-size: 2rem;
+        .tool-header h2 {
             margin: 0 0 10px 0;
-            background: linear-gradient(to right, #60a5fa, #34d399);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .welcome-card p {
-            color: var(--text-muted);
+        .tool-header p {
             margin: 0;
-            font-size: 1rem;
-            line-height: 1.6;
-        }
-
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
         }
 
         .tool-card {
-            background: var(--panel-bg);
+            background: var(--sidebar-bg);
             border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 22px;
-            text-decoration: none;
-            color: var(--text-main);
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        label { display: block; font-weight: 600; margin-bottom: 10px; font-size: 15px; color: var(--text-main);}
+
+        textarea { 
+            width: 100%; 
+            background-color: var(--bg-dark); 
+            color: var(--text-main); 
+            border: 1px solid var(--border); 
+            border-radius: 8px; 
+            padding: 12px; 
+            font-family: monospace; 
+            font-size: 14px; 
+            resize: vertical; 
+            outline: none; 
+            box-sizing: border-box;
+        }
+        textarea:focus { border-color: var(--accent); }
+        
+        #inputList { height: 160px; margin-bottom: 15px; }
+        
+        .btn-primary { 
+            width: 100%; 
+            background-color: var(--accent); 
+            color: white; 
+            border: none; 
+            padding: 12px; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: 0.2s; 
+        }
+        .btn-primary:hover { background-color: var(--accent-hover); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .status-text { text-align: center; font-weight: bold; margin-bottom: 15px; color: var(--accent); font-size: 15px; }
+
+        .results-container { display: flex; gap: 20px; }
+        
+        @media (max-width: 768px) {
+            .results-container { flex-direction: column; }
         }
 
-        .tool-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--accent);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
-        }
+        .result-box { flex: 1; display: flex; flex-direction: column; }
+        
+        .result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: bold; font-size: 14px; }
+        
+        .result-badge { padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; color: white; background-color: #374151;}
+        .live-text { color: var(--green-live); }
+        .dead-text { color: var(--red-dead); }
+        .bg-live { background-color: var(--green-live); color: #000; }
+        .bg-dead { background-color: var(--red-dead); }
 
-        .tool-icon {
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-        }
+        .btn-copy { background-color: transparent; border: 1px solid var(--border); color: var(--text-main); padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; transition: 0.2s; }
+        .btn-copy:hover { background-color: rgba(255,255,255,0.1); }
 
-        .tool-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: #fff;
-        }
-
-        .tool-desc {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            line-height: 1.5;
-        }
+        .out-area { height: 350px; }
+        .out-live { border-color: rgba(16, 185, 129, 0.3); }
+        .out-live:focus { border-color: rgba(16, 185, 129, 0.8); }
+        .out-dead { border-color: rgba(239, 68, 68, 0.3); }
+        .out-dead:focus { border-color: rgba(239, 68, 68, 0.8); }
     </style>
 </head>
 <body>
@@ -283,10 +313,10 @@
         </div>
     </header>
 
-    <!-- Overlay Gelap (Muncul jika menu dibuka) -->
+    <!-- Overlay Gelap -->
     <div class="overlay" id="overlay"></div>
 
-    <!-- Sidebar Menu (Tersembunyi) -->
+    <!-- Sidebar Menu -->
     <nav class="sidebar" id="sidebar">
         
         <!-- Kategori Facebook -->
@@ -305,71 +335,60 @@
                 <a href="/api/EKSTRAKUID" class="submenu-item">
                     <span style="font-size: 14px; color: #3b82f6;">◆</span> Ekstrak UID
                 </a>
-                <a href="/api/CEKLIVEUID" class="submenu-item">
+                <!-- MENU AKTIF -->
+                <a href="/api/CEKLIVEUID" class="submenu-item active">
                     <span style="font-size: 14px; color: #3b82f6;">◆</span> Cek Live UID
-                </a>
-            </div>
-        </div>
-
-        <!-- Kategori TikTok -->
-        <div class="category-group">
-            <div class="category-title">
-                <div class="category-title-left">
-                    <svg style="width:18px;height:18px" viewBox="0 0 448 512"><path fill="#ffffff" d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.17h0A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14Z"/></svg>
-                    TikTok Tools
-                </div>
-                <span class="badge">2</span>
-            </div>
-            <div class="submenu">
-                <a href="#" class="submenu-item" style="opacity: 0.4; pointer-events: none;">
-                    <span style="font-size: 14px; color: #3b82f6;">◆</span> Tools TikTok 1
-                </a>
-                <a href="#" class="submenu-item" style="opacity: 0.4; pointer-events: none;">
-                    <span style="font-size: 14px; color: #3b82f6;">◆</span> Tools TikTok 2
                 </a>
             </div>
         </div>
     </nav>
 
-    <!-- Konten Utama (Beranda) -->
+    <!-- Konten Utama (Cek Live UID) -->
     <main class="main-content" id="mainContent">
         
-        <div class="welcome-card">
-            <h1>Selamat Datang, Dimmskuy!</h1>
-            <p>Platform pusat alat pemrosesan dan otomatisasi untuk berbagai kebutuhan optimasi Sosial Media Anda (Facebook, TikTok, dan platform lainnya). Klik tombol garis tiga di atas untuk membuka menu.</p>
+        <div class="tool-header">
+            <h2>
+                <svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                Cek Live UID
+            </h2>
+            <p>Alat pemeriksa status aktif atau mati dari daftar UID Facebook menggunakan proses client-side yang sangat cepat.</p>
         </div>
 
-        <div class="tools-grid">
-            <!-- Pencocok UID -->
-            <a href="/api/PENCOCOKUID" class="tool-card">
-                <div class="tool-icon">
-                    <svg style="width:28px;height:28px" viewBox="0 0 24 24"><path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                </div>
-                <div class="tool-title">Pencocok UID & Cookies</div>
-                <div class="tool-desc">Alat untuk mencocokkan daftar UID Facebook dengan raw cookies secara cepat dan aman di memori.</div>
-            </a>
+        <!-- Form Input -->
+        <div class="tool-card">
+            <label>🕵️ Daftar UID (Format bebas: UID saja atau UID|Pass|dll)</label>
+            <textarea id="inputList" placeholder="Tempel daftar UID di sini..."></textarea>
+            <button id="btnStart" class="btn-primary">⚡ Mulai Cek Status UID</button>
+        </div>
+
+        <!-- Output Hasil -->
+        <div class="tool-card">
+            <div id="statusInfo" class="status-text" style="display: none;">✅ Selesai memproses 0 data.</div>
             
-            <!-- Ekstrak UID -->
-            <a href="/api/EKSTRAKUID" class="tool-card">
-                <div class="tool-icon">
-                    <svg style="width:28px;height:28px" viewBox="0 0 24 24"><path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            <div class="results-container">
+                <div class="result-box">
+                    <div class="result-header">
+                        <span class="live-text">✅ HASIL LIVE <span class="result-badge bg-live" id="countLive">0</span></span>
+                        <button class="btn-copy" onclick="copyText('outLive')">📋 Salin</button>
+                    </div>
+                    <textarea id="outLive" class="out-area out-live" readonly></textarea>
                 </div>
-                <div class="tool-title">Ekstraktor UID</div>
-                <div class="tool-desc">Ambil dan saring nilai c_user (UID) dari kumpulan teks raw cookies secara instan.</div>
-            </a>
 
-            <!-- Cek Live UID -->
-            <a href="/api/CEKLIVEUID" class="tool-card">
-                <div class="tool-icon">
-                    <svg style="width:28px;height:28px" viewBox="0 0 24 24"><path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                <div class="result-box">
+                    <div class="result-header">
+                        <span class="dead-text">❌ HASIL DEAD <span class="result-badge bg-dead" id="countDead">0</span></span>
+                        <button class="btn-copy" onclick="copyText('outDead')">📋 Salin</button>
+                    </div>
+                    <textarea id="outDead" class="out-area out-dead" readonly></textarea>
                 </div>
-                <div class="tool-title">Cek Live UID</div>
-                <div class="tool-desc">Cek status profil Facebook (Aktif atau Mati) secara real-time. Memisahkan hasil secara otomatis.</div>
-            </a>
+            </div>
         </div>
+
     </main>
 
+    <!-- SCRIPT GABUNGAN -->
     <script>
+        // Logika Sidebar
         const menuToggle = document.getElementById('menuToggle');
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
@@ -381,6 +400,95 @@
 
         menuToggle.addEventListener('click', toggleMenu);
         overlay.addEventListener('click', toggleMenu);
+
+        // Logika Cek Live UID (Mode JS Client-Side Cepat)
+        const inputList = document.getElementById('inputList');
+        const btnStart = document.getElementById('btnStart');
+        const outLive = document.getElementById('outLive');
+        const outDead = document.getElementById('outDead');
+        const countLiveEl = document.getElementById('countLive');
+        const countDeadEl = document.getElementById('countDead');
+        const statusInfo = document.getElementById('statusInfo');
+
+        function checkUID(uid) {
+            return new Promise((resolve) => {
+                let img = new Image();
+                img.onload = function() {
+                    if (img.width === 100 && img.height === 100) resolve("LIVE");
+                    else if (img.width === 100 && img.height === 63) resolve("DEAD");
+                    else resolve("UNKNOWN_DIMENSION"); 
+                };
+                img.onerror = function() { resolve("UNKNOWN_400"); };
+                img.src = "https://graph.facebook.com/" + uid + "/picture?type=normal&_=" + new Date().getTime();
+            });
+        }
+
+        btnStart.addEventListener('click', async function() {
+            let lines = inputList.value.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+            
+            if (lines.length === 0) {
+                alert("Harap masukkan minimal 1 baris data!");
+                return;
+            }
+
+            btnStart.disabled = true;
+            btnStart.innerText = "⏳ Sedang Memproses...";
+            outLive.value = "";
+            outDead.value = "";
+            let liveCount = 0;
+            let deadCount = 0;
+            countLiveEl.innerText = liveCount;
+            countDeadEl.innerText = deadCount;
+            statusInfo.style.display = "block";
+            
+            const batchSize = 25; 
+            
+            for (let i = 0; i < lines.length; i += batchSize) {
+                let batch = lines.slice(i, i + batchSize);
+                
+                let batchPromises = batch.map(async (currentLine) => {
+                    let uidMatch = currentLine.match(/^(\d+)/); 
+                    if (uidMatch) {
+                        let uid = uidMatch[1];
+                        let status = await checkUID(uid);
+
+                        if (status === "LIVE") {
+                            outLive.value += currentLine + "\n";
+                            liveCount++;
+                            countLiveEl.innerText = liveCount;
+                        } else {
+                            let failReason = status !== "DEAD" ? ` [${status}]` : "";
+                            outDead.value += currentLine + failReason + "\n";
+                            deadCount++;
+                            countDeadEl.innerText = deadCount;
+                        }
+                    } else {
+                        outDead.value += currentLine + " [FORMAT_SALAH]\n";
+                        deadCount++;
+                        countDeadEl.innerText = deadCount;
+                    }
+                });
+
+                await Promise.all(batchPromises);
+
+                let processed = Math.min(i + batchSize, lines.length);
+                statusInfo.innerHTML = `⏳ Sedang memproses ${processed} dari ${lines.length} data...`;
+                
+                outLive.scrollTop = outLive.scrollHeight;
+                outDead.scrollTop = outDead.scrollHeight;
+            }
+
+            btnStart.disabled = false;
+            btnStart.innerText = "⚡ Mulai Cek Status UID";
+            statusInfo.innerHTML = `✅ Selesai memproses ${lines.length} data.`;
+        });
+
+        function copyText(elementId) {
+            let textarea = document.getElementById(elementId);
+            textarea.select();
+            document.execCommand("copy");
+            alert("Berhasil disalin!");
+        }
     </script>
 </body>
 </html>
