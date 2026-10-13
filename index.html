@@ -6,7 +6,8 @@ class handler(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/html; charset=utf-8')
         self.end_headers()
         
-        html_content = """<!DOCTYPE html>
+        html = """
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -37,7 +38,6 @@ class handler(BaseHTTPRequestHandler):
             display: flex;
         }
 
-        /* Sidebar Styling (Model Kategori Seperti Referensi) */
         .sidebar {
             width: 300px;
             background-color: var(--sidebar-bg);
@@ -87,7 +87,6 @@ class handler(BaseHTTPRequestHandler):
             font-weight: 700;
         }
 
-        /* Category Group */
         .category-group {
             margin-bottom: 12px;
             background: rgba(15, 23, 42, 0.4);
@@ -127,7 +126,6 @@ class handler(BaseHTTPRequestHandler):
             font-weight: 600;
         }
 
-        /* Submenu Items */
         .submenu {
             padding: 6px 0 6px 14px;
             display: flex;
@@ -164,7 +162,6 @@ class handler(BaseHTTPRequestHandler):
             gap: 8px;
         }
 
-        /* Main Content Area */
         .main-content {
             margin-left: 300px;
             padding: 40px;
@@ -195,7 +192,6 @@ class handler(BaseHTTPRequestHandler):
             font-size: 1rem;
         }
 
-        /* Tools Grid */
         .tools-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -316,4 +312,4 @@ class handler(BaseHTTPRequestHandler):
 </body>
 </html>
 """
-        self.wfile.write(html_content.encode('utf-8'))
+        self.wfile.write(html.encode('utf-8'))
