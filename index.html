@@ -1,140 +1,244 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dimmskuy Tools Menu</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-dark: #0f172a;
-            --panel-bg: rgba(30, 41, 59, 0.7);
-            --accent: #3b82f6;
-            --accent-hover: #2563eb;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: rgba(255, 255, 255, 0.1);
-        }
+from http.server import BaseHTTPRequestHandler
+
+class handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'text/html; charset=utf-8')
+        self.end_headers()
         
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-dark);
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
-            color: var(--text-main);
-            margin: 0;
-            padding: 40px 20px;
-            min-height: 100vh;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+        html_content = """
+        <!DOCTYPE html>
+        <html lang="id">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Dimmskuy Tools Dashboard</title>
+            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+            <style>
+                :root {
+                    --bg-dark: #0f172a;
+                    --panel-bg: rgba(30, 41, 59, 0.7);
+                    --accent: #3b82f6;
+                    --accent-hover: #2563eb;
+                    --text-main: #f8fafc;
+                    --text-muted: #94a3b8;
+                    --border: rgba(255, 255, 255, 0.1);
+                }
+                
+                body {
+                    font-family: 'Inter', sans-serif;
+                    background-color: var(--bg-dark);
+                    background-image: 
+                        radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+                    color: var(--text-main);
+                    margin: 0;
+                    padding: 0;
+                    min-height: 100vh;
+                    box-sizing: border-box;
+                    display: flex;
+                }
 
-        .container {
-            max-width: 900px;
-            width: 100%;
-        }
+                /* Sidebar Menu Kiri */
+                .sidebar {
+                    width: 260px;
+                    background: rgba(15, 23, 42, 0.9);
+                    border-right: 1px solid var(--border);
+                    padding: 30px 20px;
+                    box-sizing: border-box;
+                    display: flex;
+                    flex-direction: column;
+                    position: fixed;
+                    height: 100vh;
+                    overflow-y: auto;
+                }
 
-        .header-title {
-            text-align: center;
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 5px;
-            background: linear-gradient(to right, #60a5fa, #34d399);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .header-subtitle {
-            text-align: center;
-            color: var(--text-muted);
-            margin-bottom: 40px;
-            font-size: 1rem;
-        }
+                .sidebar-brand {
+                    font-size: 1.5rem;
+                    font-weight: 800;
+                    background: linear-gradient(to right, #60a5fa, #34d399);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    margin-bottom: 30px;
+                    text-align: center;
+                }
 
-        /* Desain Kotak Menu (Grid) */
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
+                .menu-category {
+                    font-size: 0.85rem;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    color: var(--text-muted);
+                    margin-bottom: 10px;
+                    margin-top: 20px;
+                    font-weight: 600;
+                }
 
-        .tool-card {
-            background: var(--panel-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 25px;
-            text-decoration: none;
-            color: var(--text-main);
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-        }
+                .menu-list {
+                    list-style: none;
+                    padding: 0;
+                    margin: 0 0 20px 0;
+                }
 
-        .tool-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
-        }
+                .menu-item {
+                    margin-bottom: 6px;
+                }
 
-        .tool-icon {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-        }
+                .menu-link {
+                    display: block;
+                    padding: 10px 14px;
+                    color: var(--text-muted);
+                    text-decoration: none;
+                    border-radius: 8px;
+                    transition: all 0.2s ease;
+                    font-size: 0.95rem;
+                }
 
-        .tool-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: #fff;
-        }
+                .menu-link:hover {
+                    background: rgba(59, 130, 246, 0.1);
+                    color: var(--text-main);
+                }
 
-        .tool-desc {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            line-height: 1.5;
-        }
+                .menu-link.active {
+                    background: var(--accent);
+                    color: white;
+                    font-weight: 600;
+                }
 
-        /* Kotak untuk tool yang belum ada / coming soon */
-        .tool-card.disabled {
-            opacity: 0.5;
-            pointer-events: none; /* Tidak bisa diklik */
-            cursor: not-allowed;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1 class="header-title">Dimmskuy Tools Area</h1>
-        <p class="header-subtitle">Pilih menu alat pemrosesan yang ingin Anda gunakan</p>
+                /* Konten Utama Kanan */
+                .main-content {
+                    margin-left: 260px;
+                    padding: 40px;
+                    flex: 1;
+                    box-sizing: border-box;
+                }
 
-        <div class="tools-grid">
-            <!-- Menu 1: Pencocok UID -->
-            <a href="/api/PENCOCOKUID" class="tool-card">
-                <div class="tool-icon">🔍</div>
-                <div class="tool-title">Pencocok UID & Cookies</div>
-                <div class="tool-desc">Alat untuk mencocokkan daftar UID Facebook dengan raw cookies secara cepat dan aman di memori.</div>
-            </a>
+                @media (max-width: 768px) {
+                    body {
+                        flex-direction: column;
+                    }
+                    .sidebar {
+                        position: relative;
+                        width: 100%;
+                        height: auto;
+                    }
+                    .main-content {
+                        margin-left: 0;
+                        padding: 20px;
+                    }
+                }
 
-            <!-- Menu 2: Contoh Tool Lain (Bisa diklik nanti jika sudah dibuatkan filenya) -->
-            <a href="#" class="tool-card disabled">
-                <div class="tool-icon">⚙️</div>
-                <div class="tool-title">Tool Baru 1</div>
-                <div class="tool-desc">Segera hadir. Slot untuk tools baru Anda selanjutnya.</div>
-            </a>
+                .header-title {
+                    font-size: 2rem;
+                    font-weight: 800;
+                    margin-bottom: 5px;
+                    color: #fff;
+                }
+                
+                .header-subtitle {
+                    color: var(--text-muted);
+                    margin-bottom: 30px;
+                    font-size: 0.95rem;
+                }
 
-            <!-- Menu 3: Contoh Tool Lain -->
-            <a href="#" class="tool-card disabled">
-                <div class="tool-icon">🛠️</div>
-                <div class="tool-title">Tool Baru 2</div>
-                <div class="tool-desc">Segera hadir. Slot untuk tools baru Anda selanjutnya.</div>
-            </a>
-        </div>
-    </div>
-</body>
-</html>
+                /* Grid Tools */
+                .tools-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+                    gap: 20px;
+                }
+
+                .tool-card {
+                    background: var(--panel-bg);
+                    backdrop-filter: blur(12px);
+                    -webkit-backdrop-filter: blur(12px);
+                    border: 1px solid var(--border);
+                    border-radius: 14px;
+                    padding: 22px;
+                    text-decoration: none;
+                    color: var(--text-main);
+                    transition: all 0.3s ease;
+                    display: flex;
+                    flex-direction: column;
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+                }
+
+                .tool-card:hover {
+                    transform: translateY(-4px);
+                    border-color: var(--accent);
+                    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
+                }
+
+                .tool-icon {
+                    font-size: 2.2rem;
+                    margin-bottom: 12px;
+                }
+
+                .tool-title {
+                    font-size: 1.15rem;
+                    font-weight: 600;
+                    margin-bottom: 8px;
+                    color: #fff;
+                }
+
+                .tool-desc {
+                    font-size: 0.85rem;
+                    color: var(--text-muted);
+                    line-height: 1.5;
+                }
+
+                .tool-card.disabled {
+                    opacity: 0.5;
+                    pointer-events: none;
+                    cursor: not-allowed;
+                }
+            </style>
+        </head>
+        <body>
+            <!-- Sidebar Kiri -->
+            <div class="sidebar">
+                <div class="sidebar-brand">Dimmskuy Tools</div>
+                
+                <div class="menu-category">Menu Utama</div>
+                <ul class="menu-list">
+                    <li class="menu-item"><a href="/api" class="menu-link active">🏠 Beranda</a></li>
+                </ul>
+
+                <div class="menu-category">Tools Facebook</div>
+                <ul class="menu-list">
+                    <li class="menu-item"><a href="/api/PENCOCOKUID" class="menu-link">🔍 Pencocok UID</a></li>
+                    <li class="menu-item"><a href="#" class="menu-link" style="opacity: 0.5;">⚙️ Tools 2 (Segera)</a></li>
+                    <li class="menu-item"><a href="#" class="menu-link" style="opacity: 0.5;">🛠️ Tools 3 (Segera)</a></li>
+                </ul>
+
+                <div class="menu-category">Tools TikTok</div>
+                <ul class="menu-list">
+                    <li class="menu-item"><a href="#" class="menu-link" style="opacity: 0.5;">📱 Tools 1 (Segera)</a></li>
+                    <li class="menu-item"><a href="#" class="menu-link" style="opacity: 0.5;">🎬 Tools 2 (Segera)</a></li>
+                </ul>
+            </div>
+
+            <!-- Konten Utama Kanan -->
+            <div class="main-content">
+                <h1 class="header-title">Selamat Datang, Dimmskuy!</h1>
+                <p class="header-subtitle">Pilih kategori dan alat pemrosesan yang ingin Anda gunakan melalui menu di samping.</p>
+
+                <div class="tools-grid">
+                    <!-- Kartu Pintasan Facebook -->
+                    <a href="/api/PENCOCOKUID" class="tool-card">
+                        <div class="tool-icon">🔍</div>
+                        <div class="tool-title">Pencocok UID & Cookies</div>
+                        <div class="tool-desc">Alat utama untuk mencocokkan daftar UID Facebook dengan raw cookies secara cepat.</div>
+                    </a>
+
+                    <!-- Kartu Placeholder TikTok -->
+                    <div class="tool-card disabled">
+                        <div class="tool-icon">📱</div>
+                        <div class="tool-title">Tools TikTok 1</div>
+                        <div class="tool-desc">Kategori baru untuk alat otomatisasi dan pemrosesan data TikTok. Segera hadir!</div>
+                    </div>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        self.wfile.write(html_content.encode('utf-8'))
