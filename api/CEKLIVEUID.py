@@ -3,22 +3,37 @@ import json
 import re
 import requests
 
-def check_facebook_uid(uid):
-    url = f"https://www.facebook.com/profile.php?id={uid}"
+def check_facebook_uid(uid, cookie_str=""):
+    # Menggunakan mbasic agar jauh lebih ringan, cepat, dan tidak mudah kena block
+    url = f"https://mbasic.facebook.com/profile.php?id={uid}"
+    
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Mobile Safari/537.36",
+        "Accept-Language": "id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7"
     }
+    
+    # Jika ada cookie di input, gunakan cookie tersebut agar request 100% tembus
+    if cookie_str:
+        headers["Cookie"] = cookie_str
+        
     try:
-        # Timeout diset 5 detik, jika 1 profil tidak bisa diakses, langsung anggap gagal agar cepat
-        response = requests.get(url, headers=headers, timeout=5)
+        response = requests.get(url, headers=headers, timeout=10, allow_redirects=True)
+        
         if response.status_code == 200:
+            # Deteksi "Soft 404" (Facebook kadang merespon 200 tapi isinya Halaman Tidak Ditemukan)
+            text = response.text.lower()
+            if "tidak tersedia" in text or "tidak ditemukan" in text or "not found" in text or "isn't available" in text:
+                return "DEAD"
             return "LIVE"
         elif response.status_code == 404:
             return "DEAD"
         else:
-            return "UNKNOWN"
+            return f"UNKNOWN_{response.status_code}"
+            
+    except requests.exceptions.Timeout:
+        return "TIMEOUT"
     except requests.exceptions.RequestException:
-        return "ERROR"
+        return "ERROR_KONEKSI"
 
 class handler(BaseHTTPRequestHandler):
     
@@ -77,14 +92,11 @@ class handler(BaseHTTPRequestHandler):
                 .nav-back:hover { text-decoration: underline; }
                 .grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
                 
-                /* Badge Counters */
                 .badge-live { background: rgba(16, 185, 129, 0.2); color: var(--success); padding: 4px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; border: 1px solid rgba(16, 185, 129, 0.3); }
                 .badge-dead { background: rgba(239, 68, 68, 0.2); color: var(--danger); padding: 4px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; border: 1px solid rgba(239, 68, 68, 0.3); }
                 
-                /* Info Box */
                 .info-box { background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); color: #60a5fa; padding: 12px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 15px; line-height: 1.5; }
                 
-                /* Copy Buttons */
                 .copy-btn { background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--border); padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: 600; transition: all 0.2s ease; margin-left: auto; }
                 .copy-btn:hover { background: rgba(255,255,255,0.15); }
                 .copy-btn.copied { background: var(--success); border-color: var(--success); color: white; }
@@ -105,33 +117,30 @@ class handler(BaseHTTPRequestHandler):
                         🚀 <b>Sistem Cepat Terintegrasi:</b> Proses pengecekan dilakukan <b>satu per satu secara otomatis</b> agar tidak terjadi server <i>timeout</i>. Anda aman memasukkan ratusan data sekaligus.
                     </div>
                     <form id="checkForm">
-                        <label>👤 Daftar UID (Bisa format UID saja atau UID|PASS)</label>
-                        <textarea id="uidsInput" style="height: 150px;" placeholder="10008xxxx&#10;10009xxxx|password123&#10;&#10;Satu data per baris" required></textarea>
+                        <label>👤 Daftar UID (Bisa format UID saja, atau UID|PASS|COOKIE)</label>
+                        <textarea id="uidsInput" style="height: 150px;" placeholder="10008xxxx&#10;10009xxxx|password123|datr=...c_user=...&#10;&#10;Satu data per baris" required></textarea>
                         <button type="submit" id="submitBtn" class="action-btn">⚡ Mulai Cek Status UID</button>
                     </form>
                 </div>
 
                 <div id="resultSection" class="glass-panel" style="display: none;">
-                    <!-- Area Progress Bar (Teks) -->
                     <div id="progressText" style="text-align: center; color: var(--accent); font-weight: 600; margin-bottom: 15px; font-size: 0.9rem;"></div>
                     
                     <div class="grid-2col">
-                        <!-- Kolom Live -->
                         <div>
                             <div class="result-header">
                                 <label style="margin: 0; color: var(--success);">✅ HASIL LIVE <span id="countLive" class="badge-live" style="margin-left: 8px;">0</span></label>
                                 <button type="button" class="copy-btn" onclick="copyResult('resultLive', this)">📋 Salin</button>
                             </div>
-                            <textarea id="resultLive" style="height: 250px; border-color: rgba(16, 185, 129, 0.3);" readonly></textarea>
+                            <textarea id="resultLive" style="height: 350px; border-color: rgba(16, 185, 129, 0.3);" readonly></textarea>
                         </div>
                         
-                        <!-- Kolom Dead -->
                         <div>
                             <div class="result-header">
                                 <label style="margin: 0; color: var(--danger);">❌ HASIL DEAD <span id="countDead" class="badge-dead" style="margin-left: 8px;">0</span></label>
                                 <button type="button" class="copy-btn" onclick="copyResult('resultDead', this)">📋 Salin</button>
                             </div>
-                            <textarea id="resultDead" style="height: 250px; border-color: rgba(239, 68, 68, 0.3);" readonly></textarea>
+                            <textarea id="resultDead" style="height: 350px; border-color: rgba(239, 68, 68, 0.3);" readonly></textarea>
                         </div>
                     </div>
                 </div>
@@ -141,7 +150,6 @@ class handler(BaseHTTPRequestHandler):
                 document.getElementById('checkForm').addEventListener('submit', async (e) => {
                     e.preventDefault();
                     
-                    // Ambil data dan saring baris kosong
                     const rawInput = document.getElementById('uidsInput').value;
                     const lines = rawInput.split('\\n').map(line => line.trim()).filter(line => line !== "");
                     
@@ -153,7 +161,6 @@ class handler(BaseHTTPRequestHandler):
                     btn.disabled = true;
                     document.getElementById('resultSection').style.display = 'block';
                     
-                    // Reset UI
                     const liveArea = document.getElementById('resultLive');
                     const deadArea = document.getElementById('resultDead');
                     const countLive = document.getElementById('countLive');
@@ -163,11 +170,8 @@ class handler(BaseHTTPRequestHandler):
                     deadArea.value = "";
                     let liveC = 0, deadC = 0;
                     
-                    // PROSES SATU PER SATU SECARA ASYNCHRONOUS (Cepat & Anti Timeout)
                     for (let i = 0; i < lines.length; i++) {
                         const currentLine = lines[i];
-                        
-                        // Update Progress
                         btn.innerHTML = `⏳ Mengecek... (${i + 1} / ${lines.length})`;
                         progressText.innerHTML = `Sedang memproses baris ${i + 1} dari ${lines.length}...`;
                         
@@ -180,41 +184,43 @@ class handler(BaseHTTPRequestHandler):
                             
                             const data = await response.json();
                             
-                            // Distribusikan hasil langsung ke text area secara real-time
                             if (data.status === 'LIVE') {
                                 liveArea.value += (liveArea.value ? '\\n' : '') + data.line;
                                 liveC++;
                                 countLive.innerText = liveC;
-                                liveArea.scrollTop = liveArea.scrollHeight; // Auto scroll ke bawah
-                            } else {
+                                liveArea.scrollTop = liveArea.scrollHeight;
+                            } else if (data.status === 'DEAD') {
                                 deadArea.value += (deadArea.value ? '\\n' : '') + data.line;
+                                deadC++;
+                                countDead.innerText = deadC;
+                                deadArea.scrollTop = deadArea.scrollHeight;
+                            } else {
+                                // JIKA KENA BLOCK/TIMEOUT, AKAN MUNCUL KETERANGANNYA DI SINI
+                                deadArea.value += (deadArea.value ? '\\n' : '') + data.line + ` [${data.status}]`;
                                 deadC++;
                                 countDead.innerText = deadC;
                                 deadArea.scrollTop = deadArea.scrollHeight;
                             }
                         } catch (error) {
-                            // Jika ada error koneksi API, anggap dead atau lewati
                             deadArea.value += (deadArea.value ? '\\n' : '') + currentLine + " [ERROR_KONEKSI]";
                             deadC++;
                             countDead.innerText = deadC;
+                            deadArea.scrollTop = deadArea.scrollHeight;
                         }
                     }
 
-                    // Proses Selesai
                     btn.innerHTML = '⚡ Mulai Cek Status UID';
                     btn.disabled = false;
                     progressText.innerHTML = `✅ Selesai memproses ${lines.length} data.`;
                 });
 
-                // FUNGSI COPY
                 function copyResult(textareaId, btnObj) {
                     const textarea = document.getElementById(textareaId);
-                    if (!textarea.value) return; // Jangan copy jika kosong
+                    if (!textarea.value) return; 
                     
                     textarea.select();
                     document.execCommand('copy');
                     
-                    // Animasi Tombol
                     const originalText = btnObj.innerHTML;
                     btnObj.innerHTML = '✅ Disalin!';
                     btnObj.classList.add('copied');
@@ -231,10 +237,6 @@ class handler(BaseHTTPRequestHandler):
         self.wfile.write(html_content.encode('utf-8'))
 
     def do_POST(self):
-        """
-        Sekarang backend HANYA memproses SATU BARIS per request.
-        Ini sangat meringankan server dan menjamin 0% Timeout Vercel.
-        """
         content_length = int(self.headers.get('Content-Length', 0))
         post_data = self.rfile.read(content_length).decode('utf-8')
         
@@ -246,16 +248,26 @@ class handler(BaseHTTPRequestHandler):
             return
             
         line = parsed_data.get('line', '').strip()
-        status = "UNKNOWN"
+        status = "FORMAT_SALAH"
         
         if line:
-            # Ambil UID (angka) dari depan string
+            # Ambil hanya angka UID yang posisinya paling depan
             match = re.match(r'^(\d+)', line)
             if match:
                 uid = match.group(1)
-                status = check_facebook_uid(uid)
+                
+                # Ekstrak otomatis jika baris tersebut mengandung teks cookie
+                cookie_str = ""
+                if "c_user=" in line:
+                    parts = line.split('|')
+                    for part in parts:
+                        if "c_user=" in part:
+                            cookie_str = part.strip()
+                            break
+                            
+                status = check_facebook_uid(uid, cookie_str)
             else:
-                status = "DEAD" # Jika tidak ada format UID di depan, anggap Invalid/Dead
+                status = "DEAD" # Jika baris tidak diawali angka, otomatis Dead
                 
         self.send_response(200)
         self._send_cors_headers()
