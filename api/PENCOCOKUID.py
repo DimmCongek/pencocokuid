@@ -208,10 +208,26 @@ class handler(BaseHTTPRequestHandler):
                     border-color: rgba(16, 185, 129, 0.3);
                 }
 
+                /* CSS BARU UNTUK TOMBOL KEMBALI */
+                .nav-back {
+                    display: inline-block;
+                    margin-bottom: 20px;
+                    color: var(--accent);
+                    text-decoration: none;
+                    font-weight: 600;
+                    font-size: 0.9rem;
+                }
+                .nav-back:hover {
+                    text-decoration: underline;
+                }
+
             </style>
         </head>
         <body>
             <div class="container">
+                <!-- TOMBOL KEMBALI -->
+                <a href="/" class="nav-back">← Kembali ke Dashboard</a>
+                
                 <h1 class="header-title">PENCOCOK UID & COOKIES</h1>
                 <p class="header-subtitle">Alat pemrosesan cepat dan aman</p>
 
