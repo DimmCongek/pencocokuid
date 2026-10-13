@@ -25,70 +25,130 @@
             color: var(--text-main);
             margin: 0;
             padding: 0;
+            padding-top: 60px; /* Jarak untuk Topbar */
             min-height: 100vh;
             display: flex;
+            overflow-x: hidden;
         }
 
+        /* 1. TOPBAR (Garis Tiga Navbar) */
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: var(--sidebar-bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            box-sizing: border-box;
+            z-index: 1000;
+            /* Layout Default Desktop: Garis tiga di kiri */
+            justify-content: flex-start;
+            gap: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 26px;
+            height: 22px;
+            padding: 0;
+            z-index: 1001;
+            order: 1; /* Desktop: Posisi di Kiri */
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 100%;
+            height: 3px;
+            background-color: var(--text-main);
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-toggle:hover span {
+            background-color: var(--accent);
+        }
+
+        .topbar-brand {
+            order: 2; /* Desktop: Posisi di kanan garis tiga */
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Mode HP (Mobile) - Posisi Garis Tiga dipindah */
+        @media (max-width: 768px) {
+            .topbar {
+                justify-content: space-between;
+            }
+            .menu-toggle {
+                order: 2; /* Mobile: Posisi di Kanan Atas */
+            }
+            .topbar-brand {
+                order: 1; /* Mobile: Posisi di Kiri Atas */
+            }
+        }
+
+        /* 2. SIDEBAR (Menu Kategorinya) */
         .sidebar {
-            width: 300px;
+            width: 280px;
             background-color: var(--sidebar-bg);
             border-right: 1px solid var(--border);
             padding: 24px 16px;
             box-sizing: border-box;
-            height: 100vh;
+            height: calc(100vh - 60px);
             position: fixed;
+            top: 60px;
+            left: -320px; /* Sembunyi dari layar secara default */
+            transition: left 0.3s ease;
             overflow-y: auto;
-            box-shadow: 4px 0 20px rgba(0,0,0,0.3);
+            z-index: 999;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.4);
         }
 
-        .sidebar-header {
-            background: var(--panel-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .sidebar.active {
+            left: 0; /* Muncul jika ditekan */
         }
 
-        .sidebar-header-icon {
-            background: linear-gradient(135deg, #3b82f6, #10b981);
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
+        /* 3. OVERLAY (Latar belakang gelap saat menu terbuka) */
+        .overlay {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 60px);
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(2px);
+            z-index: 998;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .overlay.active {
+            visibility: visible;
+            opacity: 1;
         }
 
-        .sidebar-header-text h2 {
-            font-size: 0.85rem;
-            margin: 0;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .sidebar-header-text h1 {
-            font-size: 1.15rem;
-            margin: 2px 0 0 0;
-            color: #fff;
-            font-weight: 700;
-        }
-
+        /* Desain Item Kategori */
         .category-group {
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             background: rgba(15, 23, 42, 0.4);
             border: 1px solid var(--border);
             border-radius: 10px;
             overflow: hidden;
-            transition: all 0.2s ease;
-        }
-
-        .category-group:hover {
-            border-color: rgba(59, 130, 246, 0.3);
         }
 
         .category-title {
@@ -99,7 +159,8 @@
             font-weight: 600;
             font-size: 0.95rem;
             color: var(--text-main);
-            background: rgba(30, 41, 59, 0.4);
+            background: rgba(30, 41, 59, 0.6);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
         .category-title-left {
@@ -118,22 +179,23 @@
         }
 
         .submenu {
-            padding: 6px 0 6px 14px;
+            padding: 8px 14px;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
         }
 
         .submenu-item {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 8px 12px 8px 8px;
+            justify-content: flex-start;
+            padding: 8px;
             color: var(--text-muted);
             text-decoration: none;
             border-radius: 6px;
             font-size: 0.9rem;
             transition: all 0.2s ease;
+            gap: 10px;
         }
 
         .submenu-item:hover {
@@ -141,23 +203,23 @@
             color: var(--text-main);
         }
 
-        .submenu-item.active {
-            background: rgba(59, 130, 246, 0.2);
-            color: #60a5fa;
-            font-weight: 600;
-        }
-
-        .submenu-left {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
+        /* 4. MAIN CONTENT (Konten Utama) */
         .main-content {
-            margin-left: 300px;
             padding: 40px;
-            flex: 1;
+            width: 100%;
             box-sizing: border-box;
+            transition: padding-left 0.3s ease;
+        }
+
+        @media (min-width: 769px) {
+            .sidebar.active ~ .main-content {
+                padding-left: 320px; /* Mendorong konten ke kanan jika menu dibuka di Desktop */
+            }
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 20px;
+            }
         }
 
         .welcome-card {
@@ -181,6 +243,7 @@
             color: var(--text-muted);
             margin: 0;
             font-size: 1rem;
+            line-height: 1.6;
         }
 
         .tools-grid {
@@ -208,8 +271,9 @@
         }
 
         .tool-icon {
-            font-size: 2rem;
             margin-bottom: 12px;
+            display: flex;
+            align-items: center;
         }
 
         .tool-title {
@@ -222,45 +286,50 @@
         .tool-desc {
             font-size: 0.85rem;
             color: var(--text-muted);
-            line-height: 1.4;
-        }
-
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
-            .sidebar { position: relative; width: 100%; height: auto; }
-            .main-content { margin-left: 0; padding: 20px; }
+            line-height: 1.5;
         }
     </style>
 </head>
 <body>
 
-    <!-- Sidebar Kategori -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-header-icon">⚡</div>
-            <div class="sidebar-header-text">
-                <h2>Discovery</h2>
-                <h1>Dimmskuy Tools</h1>
-            </div>
+    <!-- Area Atas (Garis Tiga Navbar) -->
+    <header class="topbar">
+        <button class="menu-toggle" id="menuToggle" aria-label="Buka Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        
+        <div class="topbar-brand">
+            ⚡ Dimmskuy Tools
         </div>
+    </header>
 
+    <!-- Overlay Gelap (Muncul jika menu dibuka) -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Sidebar Menu (Tersembunyi) -->
+    <nav class="sidebar" id="sidebar">
+        
         <!-- Kategori Facebook -->
         <div class="category-group">
             <div class="category-title">
                 <div class="category-title-left">
-                    <span>📘</span> Facebook
+                    <!-- Logo Facebook Asli (SVG) -->
+                    <svg style="width:18px;height:18px" viewBox="0 0 24 24"><path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    Facebook Tools
                 </div>
                 <span class="badge">3</span>
             </div>
             <div class="submenu">
                 <a href="/api/PENCOCOKUID" class="submenu-item">
-                    <span class="submenu-left">🔹 Pencocok UID</span>
+                    <span style="font-size: 14px;">🔹</span> Pencocok UID
                 </a>
                 <a href="#" class="submenu-item" style="opacity: 0.4; pointer-events: none;">
-                    <span class="submenu-left">🔹 Tools 2</span>
+                    <span style="font-size: 14px;">🔹</span> Tools FB 2
                 </a>
                 <a href="#" class="submenu-item" style="opacity: 0.4; pointer-events: none;">
-                    <span class="submenu-left">🔹 Tools 3</span>
+                    <span style="font-size: 14px;">🔹</span> Tools FB 3
                 </a>
             </div>
         </div>
@@ -269,36 +338,60 @@
         <div class="category-group">
             <div class="category-title">
                 <div class="category-title-left">
-                    <span>📱</span> TikTok
+                    <!-- Logo TikTok Asli (SVG) -->
+                    <svg style="width:18px;height:18px" viewBox="0 0 448 512"><path fill="#ffffff" d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.17h0A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14Z"/></svg>
+                    TikTok Tools
                 </div>
                 <span class="badge">2</span>
             </div>
             <div class="submenu">
                 <a href="#" class="submenu-item" style="opacity: 0.4; pointer-events: none;">
-                    <span class="submenu-left">🔹 Tools 1</span>
+                    <span style="font-size: 14px;">🔹</span> Tools TikTok 1
                 </a>
                 <a href="#" class="submenu-item" style="opacity: 0.4; pointer-events: none;">
-                    <span class="submenu-left">🔹 Tools 2</span>
+                    <span style="font-size: 14px;">🔹</span> Tools TikTok 2
                 </a>
             </div>
         </div>
-    </div>
+    </nav>
 
-    <!-- Konten Utama -->
-    <div class="main-content">
+    <!-- Konten Utama (Beranda) -->
+    <main class="main-content" id="mainContent">
+        
+        <!-- Pesan Sambutan Sosmed -->
         <div class="welcome-card">
             <h1>Selamat Datang, Dimmskuy!</h1>
-            <p>Pilih menu tools di sebelah kiri untuk mulai menggunakan alat pemrosesan.</p>
+            <p>Platform pusat alat pemrosesan dan otomatisasi untuk berbagai kebutuhan optimasi Sosial Media Anda (Facebook, TikTok, dan platform lainnya). Klik tombol garis tiga di atas untuk membuka menu.</p>
         </div>
 
         <div class="tools-grid">
+            <!-- Kartu Jalan Pintas: Pencocok UID -->
             <a href="/api/PENCOCOKUID" class="tool-card">
-                <div class="tool-icon">🔍</div>
+                <div class="tool-icon">
+                    <svg style="width:28px;height:28px" viewBox="0 0 24 24"><path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                </div>
                 <div class="tool-title">Pencocok UID & Cookies</div>
-                <div class="tool-desc">Alat untuk mencocokkan daftar UID Facebook dengan raw cookies secara cepat dan aman.</div>
+                <div class="tool-desc">Alat untuk mencocokkan daftar UID Facebook dengan raw cookies secara cepat dan aman di memori.</div>
             </a>
         </div>
-    </div>
+    </main>
 
+    <!-- Script Javascript Animasi Garis Tiga -->
+    <script>
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+
+        function toggleMenu() {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        // Buka menu saat garis tiga diklik
+        menuToggle.addEventListener('click', toggleMenu);
+
+        // Tutup menu otomatis jika area gelap di luar layar diklik
+        overlay.addEventListener('click', toggleMenu);
+    </script>
 </body>
 </html>
