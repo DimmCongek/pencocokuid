@@ -25,13 +25,12 @@
             color: var(--text-main);
             margin: 0;
             padding: 0;
-            padding-top: 60px; /* Jarak untuk Topbar */
+            padding-top: 60px;
             min-height: 100vh;
             display: flex;
             overflow-x: hidden;
         }
 
-        /* 1. TOPBAR (Garis Tiga Navbar) */
         .topbar {
             position: fixed;
             top: 0;
@@ -45,7 +44,6 @@
             padding: 0 20px;
             box-sizing: border-box;
             z-index: 1000;
-            /* Layout Default Desktop: Garis tiga di kiri */
             justify-content: flex-start;
             gap: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.3);
@@ -62,7 +60,7 @@
             height: 22px;
             padding: 0;
             z-index: 1001;
-            order: 1; /* Desktop: Posisi di Kiri */
+            order: 1;
         }
 
         .menu-toggle span {
@@ -79,7 +77,7 @@
         }
 
         .topbar-brand {
-            order: 2; /* Desktop: Posisi di kanan garis tiga */
+            order: 2;
             font-size: 1.25rem;
             font-weight: 700;
             background: linear-gradient(to right, #60a5fa, #34d399);
@@ -89,20 +87,12 @@
             align-items: center;
         }
 
-        /* Mode HP (Mobile) - Posisi Garis Tiga dipindah */
         @media (max-width: 768px) {
-            .topbar {
-                justify-content: space-between;
-            }
-            .menu-toggle {
-                order: 2; /* Mobile: Posisi di Kanan Atas */
-            }
-            .topbar-brand {
-                order: 1; /* Mobile: Posisi di Kiri Atas */
-            }
+            .topbar { justify-content: space-between; }
+            .menu-toggle { order: 2; }
+            .topbar-brand { order: 1; }
         }
 
-        /* 2. SIDEBAR (Menu Kategorinya) */
         .sidebar {
             width: 280px;
             background-color: var(--sidebar-bg);
@@ -112,18 +102,15 @@
             height: calc(100vh - 60px);
             position: fixed;
             top: 60px;
-            left: -320px; /* Sembunyi dari layar secara default */
+            left: -320px;
             transition: left 0.3s ease;
             overflow-y: auto;
             z-index: 999;
             box-shadow: 4px 0 20px rgba(0,0,0,0.4);
         }
 
-        .sidebar.active {
-            left: 0; /* Muncul jika ditekan */
-        }
+        .sidebar.active { left: 0; }
 
-        /* 3. OVERLAY (Latar belakang gelap saat menu terbuka) */
         .overlay {
             position: fixed;
             top: 60px;
@@ -137,12 +124,8 @@
             opacity: 0;
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
-        .overlay.active {
-            visibility: visible;
-            opacity: 1;
-        }
+        .overlay.active { visibility: visible; opacity: 1; }
 
-        /* Desain Item Kategori */
         .category-group {
             margin-bottom: 16px;
             background: rgba(15, 23, 42, 0.4);
@@ -203,7 +186,6 @@
             color: var(--text-main);
         }
 
-        /* 4. MAIN CONTENT (Konten Utama) */
         .main-content {
             padding: 40px;
             width: 100%;
@@ -212,14 +194,10 @@
         }
 
         @media (min-width: 769px) {
-            .sidebar.active ~ .main-content {
-                padding-left: 320px; /* Mendorong konten ke kanan jika menu dibuka di Desktop */
-            }
+            .sidebar.active ~ .main-content { padding-left: 320px; }
         }
         @media (max-width: 768px) {
-            .main-content {
-                padding: 20px;
-            }
+            .main-content { padding: 20px; }
         }
 
         .welcome-card {
@@ -315,7 +293,6 @@
         <div class="category-group">
             <div class="category-title">
                 <div class="category-title-left">
-                    <!-- Logo Facebook Asli (SVG) -->
                     <svg style="width:18px;height:18px" viewBox="0 0 24 24"><path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                     Facebook Tools
                 </div>
@@ -323,13 +300,13 @@
             </div>
             <div class="submenu">
                 <a href="/api/PENCOCOKUID" class="submenu-item">
-                    <span style="font-size: 14px;">🔹</span> Pencocok UID
+                    <span style="font-size: 14px; color: #3b82f6;">◆</span> Pencocok UID
+                </a>
+                <a href="/api/EKSTRAKUID" class="submenu-item">
+                    <span style="font-size: 14px; color: #3b82f6;">◆</span> Ekstrak UID
                 </a>
                 <a href="#" class="submenu-item" style="opacity: 0.4; pointer-events: none;">
-                    <span style="font-size: 14px;">🔹</span> Tools FB 2
-                </a>
-                <a href="#" class="submenu-item" style="opacity: 0.4; pointer-events: none;">
-                    <span style="font-size: 14px;">🔹</span> Tools FB 3
+                    <span style="font-size: 14px; color: #3b82f6;">◆</span> Tools FB 3
                 </a>
             </div>
         </div>
@@ -338,7 +315,6 @@
         <div class="category-group">
             <div class="category-title">
                 <div class="category-title-left">
-                    <!-- Logo TikTok Asli (SVG) -->
                     <svg style="width:18px;height:18px" viewBox="0 0 448 512"><path fill="#ffffff" d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.17h0A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14Z"/></svg>
                     TikTok Tools
                 </div>
@@ -346,10 +322,10 @@
             </div>
             <div class="submenu">
                 <a href="#" class="submenu-item" style="opacity: 0.4; pointer-events: none;">
-                    <span style="font-size: 14px;">🔹</span> Tools TikTok 1
+                    <span style="font-size: 14px; color: #3b82f6;">◆</span> Tools TikTok 1
                 </a>
                 <a href="#" class="submenu-item" style="opacity: 0.4; pointer-events: none;">
-                    <span style="font-size: 14px;">🔹</span> Tools TikTok 2
+                    <span style="font-size: 14px; color: #3b82f6;">◆</span> Tools TikTok 2
                 </a>
             </div>
         </div>
@@ -358,14 +334,13 @@
     <!-- Konten Utama (Beranda) -->
     <main class="main-content" id="mainContent">
         
-        <!-- Pesan Sambutan Sosmed -->
         <div class="welcome-card">
             <h1>Selamat Datang, Dimmskuy!</h1>
             <p>Platform pusat alat pemrosesan dan otomatisasi untuk berbagai kebutuhan optimasi Sosial Media Anda (Facebook, TikTok, dan platform lainnya). Klik tombol garis tiga di atas untuk membuka menu.</p>
         </div>
 
         <div class="tools-grid">
-            <!-- Kartu Jalan Pintas: Pencocok UID -->
+            <!-- Pencocok UID -->
             <a href="/api/PENCOCOKUID" class="tool-card">
                 <div class="tool-icon">
                     <svg style="width:28px;height:28px" viewBox="0 0 24 24"><path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
@@ -373,10 +348,18 @@
                 <div class="tool-title">Pencocok UID & Cookies</div>
                 <div class="tool-desc">Alat untuk mencocokkan daftar UID Facebook dengan raw cookies secara cepat dan aman di memori.</div>
             </a>
+            
+            <!-- Ekstrak UID -->
+            <a href="/api/EKSTRAKUID" class="tool-card">
+                <div class="tool-icon">
+                    <svg style="width:28px;height:28px" viewBox="0 0 24 24"><path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                </div>
+                <div class="tool-title">Ekstraktor UID</div>
+                <div class="tool-desc">Ambil dan saring nilai c_user (UID) dari kumpulan teks raw cookies secara instan.</div>
+            </a>
         </div>
     </main>
 
-    <!-- Script Javascript Animasi Garis Tiga -->
     <script>
         const menuToggle = document.getElementById('menuToggle');
         const sidebar = document.getElementById('sidebar');
@@ -387,10 +370,7 @@
             overlay.classList.toggle('active');
         }
 
-        // Buka menu saat garis tiga diklik
         menuToggle.addEventListener('click', toggleMenu);
-
-        // Tutup menu otomatis jika area gelap di luar layar diklik
         overlay.addEventListener('click', toggleMenu);
     </script>
 </body>
