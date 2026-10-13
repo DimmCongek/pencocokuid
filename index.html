@@ -6,239 +6,314 @@ class handler(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/html; charset=utf-8')
         self.end_headers()
         
-        html_content = """
-        <!DOCTYPE html>
-        <html lang="id">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Dimmskuy Tools Dashboard</title>
-            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-            <style>
-                :root {
-                    --bg-dark: #0f172a;
-                    --panel-bg: rgba(30, 41, 59, 0.7);
-                    --accent: #3b82f6;
-                    --accent-hover: #2563eb;
-                    --text-main: #f8fafc;
-                    --text-muted: #94a3b8;
-                    --border: rgba(255, 255, 255, 0.1);
-                }
-                
-                body {
-                    font-family: 'Inter', sans-serif;
-                    background-color: var(--bg-dark);
-                    background-image: 
-                        radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
-                        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
-                    color: var(--text-main);
-                    margin: 0;
-                    padding: 0;
-                    min-height: 100vh;
-                    box-sizing: border-box;
-                    display: flex;
-                }
+        html_content = """<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dimmskuy Tools Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #090d16;
+            --sidebar-bg: #0f172a;
+            --panel-bg: rgba(30, 41, 59, 0.6);
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+            --badge-bg: rgba(59, 130, 246, 0.15);
+            --badge-color: #60a5fa;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+        }
 
-                /* Sidebar Menu Kiri */
-                .sidebar {
-                    width: 260px;
-                    background: rgba(15, 23, 42, 0.9);
-                    border-right: 1px solid var(--border);
-                    padding: 30px 20px;
-                    box-sizing: border-box;
-                    display: flex;
-                    flex-direction: column;
-                    position: fixed;
-                    height: 100vh;
-                    overflow-y: auto;
-                }
+        /* Sidebar Styling (Model Kategori Seperti Referensi) */
+        .sidebar {
+            width: 300px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            padding: 24px 16px;
+            box-sizing: border-box;
+            height: 100vh;
+            position: fixed;
+            overflow-y: auto;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.3);
+        }
 
-                .sidebar-brand {
-                    font-size: 1.5rem;
-                    font-weight: 800;
-                    background: linear-gradient(to right, #60a5fa, #34d399);
-                    -webkit-background-clip: text;
-                    -webkit-text-fill-color: transparent;
-                    margin-bottom: 30px;
-                    text-align: center;
-                }
+        .sidebar-header {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-                .menu-category {
-                    font-size: 0.85rem;
-                    text-transform: uppercase;
-                    letter-spacing: 1px;
-                    color: var(--text-muted);
-                    margin-bottom: 10px;
-                    margin-top: 20px;
-                    font-weight: 600;
-                }
+        .sidebar-header-icon {
+            background: linear-gradient(135deg, #3b82f6, #10b981);
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
 
-                .menu-list {
-                    list-style: none;
-                    padding: 0;
-                    margin: 0 0 20px 0;
-                }
+        .sidebar-header-text h2 {
+            font-size: 0.85rem;
+            margin: 0;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-                .menu-item {
-                    margin-bottom: 6px;
-                }
+        .sidebar-header-text h1 {
+            font-size: 1.15rem;
+            margin: 2px 0 0 0;
+            color: #fff;
+            font-weight: 700;
+        }
 
-                .menu-link {
-                    display: block;
-                    padding: 10px 14px;
-                    color: var(--text-muted);
-                    text-decoration: none;
-                    border-radius: 8px;
-                    transition: all 0.2s ease;
-                    font-size: 0.95rem;
-                }
+        /* Category Group */
+        .category-group {
+            margin-bottom: 12px;
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
 
-                .menu-link:hover {
-                    background: rgba(59, 130, 246, 0.1);
-                    color: var(--text-main);
-                }
+        .category-group:hover {
+            border-color: rgba(59, 130, 246, 0.3);
+        }
 
-                .menu-link.active {
-                    background: var(--accent);
-                    color: white;
-                    font-weight: 600;
-                }
+        .category-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            background: rgba(30, 41, 59, 0.4);
+        }
 
-                /* Konten Utama Kanan */
-                .main-content {
-                    margin-left: 260px;
-                    padding: 40px;
-                    flex: 1;
-                    box-sizing: border-box;
-                }
+        .category-title-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-                @media (max-width: 768px) {
-                    body {
-                        flex-direction: column;
-                    }
-                    .sidebar {
-                        position: relative;
-                        width: 100%;
-                        height: auto;
-                    }
-                    .main-content {
-                        margin-left: 0;
-                        padding: 20px;
-                    }
-                }
+        .badge {
+            background: var(--badge-bg);
+            color: var(--badge-color);
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
 
-                .header-title {
-                    font-size: 2rem;
-                    font-weight: 800;
-                    margin-bottom: 5px;
-                    color: #fff;
-                }
-                
-                .header-subtitle {
-                    color: var(--text-muted);
-                    margin-bottom: 30px;
-                    font-size: 0.95rem;
-                }
+        /* Submenu Items */
+        .submenu {
+            padding: 6px 0 6px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
 
-                /* Grid Tools */
-                .tools-grid {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-                    gap: 20px;
-                }
+        .submenu-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px 8px 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
 
-                .tool-card {
-                    background: var(--panel-bg);
-                    backdrop-filter: blur(12px);
-                    -webkit-backdrop-filter: blur(12px);
-                    border: 1px solid var(--border);
-                    border-radius: 14px;
-                    padding: 22px;
-                    text-decoration: none;
-                    color: var(--text-main);
-                    transition: all 0.3s ease;
-                    display: flex;
-                    flex-direction: column;
-                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-                }
+        .submenu-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--text-main);
+        }
 
-                .tool-card:hover {
-                    transform: translateY(-4px);
-                    border-color: var(--accent);
-                    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
-                }
+        .submenu-item.active {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            font-weight: 600;
+        }
 
-                .tool-icon {
-                    font-size: 2.2rem;
-                    margin-bottom: 12px;
-                }
+        .submenu-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-                .tool-title {
-                    font-size: 1.15rem;
-                    font-weight: 600;
-                    margin-bottom: 8px;
-                    color: #fff;
-                }
+        /* Main Content Area */
+        .main-content {
+            margin-left: 300px;
+            padding: 40px;
+            flex: 1;
+            box-sizing: border-box;
+        }
 
-                .tool-desc {
-                    font-size: 0.85rem;
-                    color: var(--text-muted);
-                    line-height: 1.5;
-                }
+        .welcome-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
 
-                .tool-card.disabled {
-                    opacity: 0.5;
-                    pointer-events: none;
-                    cursor: not-allowed;
-                }
-            </style>
-        </head>
-        <body>
-            <!-- Sidebar Kiri -->
-            <div class="sidebar">
-                <div class="sidebar-brand">Dimmskuy Tools</div>
-                
-                <div class="menu-category">Menu Utama</div>
-                <ul class="menu-list">
-                    <li class="menu-item"><a href="/api" class="menu-link active">🏠 Beranda</a></li>
-                </ul>
+        .welcome-card h1 {
+            font-size: 2rem;
+            margin: 0 0 10px 0;
+            background: linear-gradient(to right, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-                <div class="menu-category">Tools Facebook</div>
-                <ul class="menu-list">
-                    <li class="menu-item"><a href="/api/PENCOCOKUID" class="menu-link">🔍 Pencocok UID</a></li>
-                    <li class="menu-item"><a href="#" class="menu-link" style="opacity: 0.5;">⚙️ Tools 2 (Segera)</a></li>
-                    <li class="menu-item"><a href="#" class="menu-link" style="opacity: 0.5;">🛠️ Tools 3 (Segera)</a></li>
-                </ul>
+        .welcome-card p {
+            color: var(--text-muted);
+            margin: 0;
+            font-size: 1rem;
+        }
 
-                <div class="menu-category">Tools TikTok</div>
-                <ul class="menu-list">
-                    <li class="menu-item"><a href="#" class="menu-link" style="opacity: 0.5;">📱 Tools 1 (Segera)</a></li>
-                    <li class="menu-item"><a href="#" class="menu-link" style="opacity: 0.5;">🎬 Tools 2 (Segera)</a></li>
-                </ul>
+        /* Tools Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .tool-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 22px;
+            text-decoration: none;
+            color: var(--text-main);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
+        }
+
+        .tool-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        .tool-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #fff;
+        }
+
+        .tool-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { position: relative; width: 100%; height: auto; }
+            .main-content { margin-left: 0; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Kategori -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-header-icon">⚡</div>
+            <div class="sidebar-header-text">
+                <h2>Discovery</h2>
+                <h1>Dimmskuy Tools</h1>
             </div>
+        </div>
 
-            <!-- Konten Utama Kanan -->
-            <div class="main-content">
-                <h1 class="header-title">Selamat Datang, Dimmskuy!</h1>
-                <p class="header-subtitle">Pilih kategori dan alat pemrosesan yang ingin Anda gunakan melalui menu di samping.</p>
-
-                <div class="tools-grid">
-                    <!-- Kartu Pintasan Facebook -->
-                    <a href="/api/PENCOCOKUID" class="tool-card">
-                        <div class="tool-icon">🔍</div>
-                        <div class="tool-title">Pencocok UID & Cookies</div>
-                        <div class="tool-desc">Alat utama untuk mencocokkan daftar UID Facebook dengan raw cookies secara cepat.</div>
-                    </a>
-
-                    <!-- Kartu Placeholder TikTok -->
-                    <div class="tool-card disabled">
-                        <div class="tool-icon">📱</div>
-                        <div class="tool-title">Tools TikTok 1</div>
-                        <div class="tool-desc">Kategori baru untuk alat otomatisasi dan pemrosesan data TikTok. Segera hadir!</div>
-                    </div>
+        <!-- Kategori Facebook -->
+        <div class="category-group">
+            <div class="category-title">
+                <div class="category-title-left">
+                    <span>📘</span> Facebook
                 </div>
+                <span class="badge">3</span>
             </div>
-        </body>
-        </html>
-        """
+            <div class="submenu">
+                <a href="/api/PENCOCOKUID" class="submenu-item">
+                    <span class="submenu-left">🔹 Pencocok UID</span>
+                </a>
+                <a href="#" class="submenu-item" style="opacity: 0.4; pointer-events: none;">
+                    <span class="submenu-left">🔹 Tools 2</span>
+                </a>
+                <a href="#" class="submenu-item" style="opacity: 0.4; pointer-events: none;">
+                    <span class="submenu-left">🔹 Tools 3</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Kategori TikTok -->
+        <div class="category-group">
+            <div class="category-title">
+                <div class="category-title-left">
+                    <span>📱</span> TikTok
+                </div>
+                <span class="badge">2</span>
+            </div>
+            <div class="submenu">
+                <a href="#" class="submenu-item" style="opacity: 0.4; pointer-events: none;">
+                    <span class="submenu-left">🔹 Tools 1</span>
+                </a>
+                <a href="#" class="submenu-item" style="opacity: 0.4; pointer-events: none;">
+                    <span class="submenu-left">🔹 Tools 2</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Konten Utama -->
+    <div class="main-content">
+        <div class="welcome-card">
+            <h1>Selamat Datang, Dimmskuy!</h1>
+            <p>Pilih menu tools di sebelah kiri untuk mulai menggunakan alat pemrosesan.</p>
+        </div>
+
+        <div class="tools-grid">
+            <a href="/api/PENCOCOKUID" class="tool-card">
+                <div class="tool-icon">🔍</div>
+                <div class="tool-title">Pencocok UID & Cookies</div>
+                <div class="tool-desc">Alat untuk mencocokkan daftar UID Facebook dengan raw cookies secara cepat dan aman.</div>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
+"""
         self.wfile.write(html_content.encode('utf-8'))
