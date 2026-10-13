@@ -16,6 +16,8 @@ HTML_PAGE = """
             --green-live: #10b981; --red-dead: #ef4444;
         }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 0; padding-top: 60px; min-height: 100vh; display: flex; overflow-x: hidden; }
+        
+        /* NAVBAR & SIDEBAR */
         .topbar { position: fixed; top: 0; left: 0; width: 100%; height: 60px; background: var(--sidebar-bg); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; box-sizing: border-box; z-index: 1000; gap: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
         .menu-toggle { background: none; border: none; cursor: pointer; display: flex; flex-direction: column; justify-content: space-around; width: 26px; height: 22px; padding: 0; z-index: 1001; order: 1; }
         .menu-toggle span { display: block; width: 100%; height: 3px; background-color: var(--text-main); border-radius: 3px; }
@@ -24,6 +26,7 @@ HTML_PAGE = """
         .sidebar.active { left: 0; }
         .overlay { position: fixed; top: 60px; left: 0; width: 100%; height: calc(100vh - 60px); background: rgba(0,0,0,0.5); backdrop-filter: blur(2px); z-index: 998; visibility: hidden; opacity: 0; }
         .overlay.active { visibility: visible; opacity: 1; }
+        
         .category-group { margin-bottom: 16px; background: rgba(15, 23, 42, 0.4); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
         .category-title { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; font-weight: 600; font-size: 0.95rem; background: rgba(30, 41, 59, 0.6); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .category-title-left { display: flex; align-items: center; gap: 10px; }
@@ -31,41 +34,48 @@ HTML_PAGE = """
         .submenu { padding: 8px 14px; display: flex; flex-direction: column; gap: 6px; }
         .submenu-item { display: flex; align-items: center; padding: 8px; color: var(--text-muted); text-decoration: none; border-radius: 6px; font-size: 0.9rem; gap: 10px; }
         .submenu-item:hover, .submenu-item.active { background: rgba(59, 130, 246, 0.1); color: var(--text-main); }
-        .main-content { padding: 40px; width: 100%; box-sizing: border-box; transition: padding-left 0.3s ease; }
-        @media (min-width: 769px) { .sidebar.active ~ .main-content { padding-left: 320px; } }
         
-        .tool-header { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px;}
-        .tool-header h2 { margin: 0 0 10px 0; color: #fff; display: flex; align-items: center; gap: 10px; }
-        .tool-header p { margin: 0; color: var(--text-muted); font-size: 0.95rem; }
-        .tool-card { background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        label { display: block; font-weight: 600; margin-bottom: 10px; font-size: 15px; color: var(--text-main);}
-        textarea { width: 100%; background-color: var(--bg-dark); color: var(--text-main); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-family: monospace; font-size: 14px; resize: vertical; outline: none; box-sizing: border-box; }
+        /* MAIN CONTENT AREA */
+        .main-content { padding: 30px 40px; width: 100%; box-sizing: border-box; transition: padding-left 0.3s ease; }
+        @media (min-width: 769px) { .sidebar.active ~ .main-content { padding-left: 320px; } }
+        @media (max-width: 768px) { .main-content { padding: 20px; } }
+        
+        /* TOMBOL KEMBALI */
+        .back-link { display: inline-block; color: var(--accent); text-decoration: none; font-weight: 500; font-size: 0.95rem; margin-bottom: 20px; transition: 0.2s; }
+        .back-link:hover { color: var(--accent-hover); text-decoration: underline; }
+
+        /* UI TOOLS DIPERKECIL (COMPACT) */
+        .tool-card { background: var(--sidebar-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 14px; color: var(--text-main);}
+        textarea { width: 100%; background-color: var(--bg-dark); color: var(--text-main); border: 1px solid var(--border); border-radius: 6px; padding: 10px; font-family: monospace; font-size: 12px; resize: vertical; outline: none; box-sizing: border-box; }
         textarea:focus { border-color: var(--accent); }
-        #inputList { height: 160px; margin-bottom: 15px; }
-        .btn-primary { width: 100%; background-color: var(--accent); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        #inputList { height: 130px; margin-bottom: 12px; }
+        
+        .btn-primary { width: 100%; background-color: var(--accent); color: white; border: none; padding: 10px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .btn-primary:hover { background-color: var(--accent-hover); }
         .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-        .status-text { text-align: center; font-weight: bold; margin-bottom: 15px; color: var(--accent); font-size: 15px; }
-        .results-container { display: flex; gap: 20px; }
+        
+        .status-text { text-align: center; font-weight: bold; margin-bottom: 12px; color: var(--accent); font-size: 14px; }
+        .results-container { display: flex; gap: 15px; }
         @media (max-width: 768px) { .results-container { flex-direction: column; } }
         .result-box { flex: 1; display: flex; flex-direction: column; }
-        .result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: bold; font-size: 14px; }
-        .result-badge { padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; color: white; background-color: #374151;}
+        .result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-weight: bold; font-size: 13px; }
+        .result-badge { padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: bold; color: white; background-color: #374151;}
         .live-text { color: var(--green-live); }
         .dead-text { color: var(--red-dead); }
         .bg-live { background-color: var(--green-live); color: #000; }
         .bg-dead { background-color: var(--red-dead); }
-        .btn-copy { background-color: transparent; border: 1px solid var(--border); color: var(--text-main); padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; transition: 0.2s; }
+        .btn-copy { background-color: transparent; border: 1px solid var(--border); color: var(--text-main); padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; transition: 0.2s; }
         .btn-copy:hover { background-color: rgba(255,255,255,0.1); }
-        .out-area { height: 350px; }
-        .out-live { border-color: rgba(16, 185, 129, 0.3); }
-        .out-dead { border-color: rgba(239, 68, 68, 0.3); }
+        
+        .out-area { height: 280px; }
+        .out-live { border-color: rgba(16, 185, 129, 0.4); }
+        .out-dead { border-color: rgba(239, 68, 68, 0.4); }
     </style>
 </head>
 <body>
     <header class="topbar">
         <button class="menu-toggle" id="menuToggle"><span></span><span></span><span></span></button>
-        <!-- Tombol kembali ke home -->
         <a href="/" class="topbar-brand">⚡ Dimmskuy Tools</a>
     </header>
 
@@ -83,20 +93,15 @@ HTML_PAGE = """
             <div class="submenu">
                 <a href="/api/PENCOCOKUID" class="submenu-item"><span style="font-size: 14px; color: #3b82f6;">◆</span> Pencocok UID</a>
                 <a href="/api/EKSTRAKUID" class="submenu-item"><span style="font-size: 14px; color: #3b82f6;">◆</span> Ekstrak UID</a>
-                <!-- Menu aktif -->
                 <a href="/api/CEKLIVEUID" class="submenu-item active"><span style="font-size: 14px; color: #3b82f6;">◆</span> Cek Live UID</a>
             </div>
         </div>
     </nav>
 
     <main class="main-content" id="mainContent">
-        <div class="tool-header">
-            <h2>
-                <svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                Cek Live UID
-            </h2>
-            <p>Alat pemeriksa status aktif atau mati dari daftar UID Facebook menggunakan proses client-side yang sangat cepat.</p>
-        </div>
+        
+        <!-- Tombol Kembali -->
+        <a href="/" class="back-link">← Kembali ke Dashboard</a>
 
         <div class="tool-card">
             <label>🕵️ Daftar UID (Format bebas: UID saja atau UID|Pass|dll)</label>
